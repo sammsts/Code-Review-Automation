@@ -1,8 +1,7 @@
 const { Router } = require('express');
 const router = Router();
+const UsuariosController = require('./Controllers/UsuariosController');
 
-router.get('/teste', (req, res) => {
-  return res.json({ ok: true });
-});
+router.post('/usuarios', UsuariosController.cadastrarUsuario);
 
 module.exports = router;
