@@ -1,0 +1,54 @@
+@import 'primereact/resources/primereact.min.css';
+@import 'primereact/resources/themes/saga-blue/theme.css';
+@import 'primeicons/primeicons.css';
+
+/* tela */
+.container{
+    height: 100vh;
+    flex-direction: column;
+    background: linear-gradient(#121212, #212b46);
+}
+
+.ctnTitle{
+    align-items:end;
+    display: flex;
+    cursor: pointer;
+}
+
+.title{
+    margin: 0px 20px;
+    font-size: 45px;
+    color: #FFF;
+    animation: flipTitle 2s;
+    transition: transform 2s;
+    transform-origin: center;
+}
+
+.title:hover{
+    transform: scale(1.1);
+}
+
+/* Filtros */
+.ctnInputFiltros {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 34px 20px;
+  }
+  
+  .datePickerContainer {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 1px 3px 8px rgba(0, 0, 0, 0.5);
+  }
+
+/* events */
+@keyframes flipTitle{
+    from{
+        transform: rotateX(90deg);
+    }
+    to{
+        transform: rotateX(0deg)
+    }
+}
