@@ -9,7 +9,7 @@ const Grid = (props) => {
       size: 'small',
       paginator: true,
       rows: 7,
-      rowsPerPageOptions: [5, 10, 15],
+      rowsPerPageOptions: [5, 7, 9],
       stripedRows: true,
       showGridlines: true,
       tableStyle: { minWidth: '50rem' },
