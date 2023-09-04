@@ -54,45 +54,86 @@ function Commits(){
   }
 
   const buscarCommits = async () => {
-    const token = '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';
-    const repoName = 'GespamWeb';
+    const token = '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';
     const user = 'Abase-Sistemas';
     const usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'sammsts', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7'];
-    const dataInicio = '2023-08-01T00:00:00Z';
-    const dataFim = '2023-08-31T23:59:59Z';
+    let dataInicio = '2023-08-01T00:00:00Z';
+    let dataFim = '2023-08-31T23:59:59Z';
     const headers = {
       Authorization: `token ${token}`,
     };
     let commits = [];
-    let page = 1;
   
-    //GESPAM
+    // GESPAM
+  const gespamRepoName = 'GespamWeb';
+  let pageGespam = 1;
+  
+  while (true) {
+    const apiUrl = `https://api.github.com/repos/${user}/${gespamRepoName}/commits?since=${dataInicio}&until=${dataFim}&page=${pageGespam}`;
+  
+    try {
+      const response = await axios.get(apiUrl, { headers });
+      const pageCommits = response.data;
+  
+      if (pageCommits.length === 0) {
+        break;
+      }
+  
+      commits = commits.concat(
+        pageCommits.filter((commit) =>
+          usuariosDesejados.includes(commit.commit.author.name) && !commit.commit.message.includes('Merge branch')
+        ).map((commit) => ({
+          codigo: commit.sha,
+          autor: trocarNome(commit.commit.author.name),
+          mensagem: commit.commit.message,
+          repositorio: 'Gespam',
+        }))
+      );
+  
+      pageGespam++;
+    } catch (error) {
+      console.error('Erro ao buscar os commits no Gespam:', error);
+      break;
+    }
+  }
+  
+    // API_RELATORIOS
+    const relatoriosRepoName = 'relatorios-gespam';
+    let pageRelatorios = 1;
+    
     while (true) {
-      const apiUrl = `https://api.github.com/repos/${user}/${repoName}/commits?since=${dataInicio}&until=${dataFim}&page=${page}`;
+      const apiUrl = `https://api.github.com/repos/${user}/${relatoriosRepoName}/commits?since=${dataInicio}&until=${dataFim}&page=${pageRelatorios}`;
+    
       try {
         const response = await axios.get(apiUrl, { headers });
         const pageCommits = response.data;
+        console.log(pageCommits)
+    
         if (pageCommits.length === 0) {
           break;
         }
+    
         commits = commits.concat(
           pageCommits.filter((commit) =>
-            usuariosDesejados.includes(commit.commit.author.name)
+            usuariosDesejados.includes(commit.commit.author.name) && !commit.commit.message.includes('Merge branch')
           ).map((commit) => ({
             codigo: commit.sha,
             autor: trocarNome(commit.commit.author.name),
             mensagem: commit.commit.message,
-            repositorio: 'Gespam'
+            repositorio: 'API Relatórios',
           }))
         );
-        setCommits(commits)
-        page++;
+    
+        pageRelatorios++;
       } catch (error) {
-        console.error('Erro ao buscar os commits:', error);
+        console.error('Erro ao buscar os commits no API Relatórios:', error);
         break;
       }
     }
+
+    setCommits(commits);
   };
+  
 
   return (
     <div className="container">
@@ -127,7 +168,7 @@ function Commits(){
           <Button
             label="Pesquisar"
             id="pesquisar"
-           />
+          />
         </div>
       </div>
       <grid id="gridMain">
