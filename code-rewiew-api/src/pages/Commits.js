@@ -55,7 +55,7 @@ function Commits(){
 
   const buscarCommits = async (nome) => {
     debugger
-    const token = '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';
+    const token = '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';
     const user = 'Abase-Sistemas';
     let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'sammsts', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7'];
     if(nome != undefined){
