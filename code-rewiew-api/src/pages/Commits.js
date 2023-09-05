@@ -11,11 +11,8 @@ import Grid from '../Componentes/grid';
 import { Column } from 'primereact/column';
 //Chakra ---------------------------------------
 
-function Commits(){
 
-  useEffect(() => {
-    buscarCommits();
-  },[]);
+function Commits(){
 
   const [selectedDateInitial, setSelectedDateInitial] = useState('');
   const [selectedDateFinal, setSelectedDateFinal] = useState('');
@@ -40,6 +37,18 @@ function Commits(){
     setSelectedDateFinal(event.target.value);
   };
 
+  function converterData(dataString) {
+    const data = new Date(dataString);
+  
+    const dia = data.getDate();
+    const mes = data.getMonth() + 1;
+    const ano = data.getFullYear();
+
+    const dataFormatada = `${dia.toString().padStart(2, '0')}/${mes.toString().padStart(2, '0')}/${ano}`;
+  
+    return dataFormatada;
+  }
+  
   const trocarNome = (nome) => {
     switch(nome){
       case 'augustowjerke': return 'Augusto'; break;
@@ -53,17 +62,17 @@ function Commits(){
     }
   }
 
-  const buscarCommits = async (nome) => {
+  const buscarCommits = async (nome, datainicial, datafinal) => {
     debugger
-    const token = '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';
+    const token = process.env.REACT_APP_API_KEY
     const user = 'Abase-Sistemas';
     let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'sammsts', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7'];
     if(nome != undefined){
-      if(nome.nome != 'Todos')
-      usuariosDesejados = nome.code
+      if(nome.name != 'Todos')
+      usuariosDesejados = [nome.code]
     }
-    let dataInicio = '2023-08-01T00:00:00Z';
-    let dataFim = '2023-08-31T23:59:59Z';
+    let dataInicio = datainicial
+    let dataFim = datafinal;
     const headers = {
       Authorization: `token ${token}`,
     };
@@ -88,6 +97,7 @@ function Commits(){
             autor: trocarNome(commit.commit.author.name),
             mensagem: commit.commit.message,
             repositorio: 'Gespam',
+            data: converterData(commit.commit.author.date)
           }))
         );
         pageGespam++;
@@ -105,8 +115,6 @@ function Commits(){
       try {
         const response = await axios.get(apiUrl, { headers });
         const pageCommits = response.data;
-        console.log(pageCommits)
-    
         if (pageCommits.length === 0) {
           break;
         }
@@ -118,6 +126,7 @@ function Commits(){
             autor: trocarNome(commit.commit.author.name),
             mensagem: commit.commit.message,
             repositorio: 'API Relatórios',
+            data: converterData(commit.commit.author.date)
           }))
         );
         pageRelatorios++;
@@ -134,8 +143,6 @@ function Commits(){
       try {
         const response = await axios.get(apiUrl, { headers });
         const pageCommits = response.data;
-        console.log(pageCommits)
-    
         if (pageCommits.length === 0) {
           break;
         }
@@ -148,6 +155,7 @@ function Commits(){
             autor: trocarNome(commit.commit.author.name),
             mensagem: commit.commit.message,
             repositorio: 'Transparência',
+            data: converterData(commit.commit.author.date)
           }))
         );
         pageRelatorios++;
@@ -193,18 +201,25 @@ function Commits(){
           <Button
             label="Pesquisar"
             id="pesquisar"
-            onClick={() => buscarCommits(atendendente)}
+            onClick={() => buscarCommits(atendendente, selectedDateInitial, selectedDateFinal)}
+            icon='pi pi-search'
           />
         </div>
       </div>
       <grid id="gridMain">
         <Grid id="grid-commits" selection={commitsSelecionado} onSelectionChange={(e) => setCommitSelecionado(e.value)} value={commits}>
           <Column className='coluna' field="codigo" header="Código" sortable style={{ width: '28%', textAlign: 'center' }}></Column>
-          <Column className='coluna' field="autor" header="Autor" sortable style={{ width: '15%', textAlign: 'center' }} ></Column>
-          <Column className='coluna' field="mensagem" header="Mensagem" sortable style={{ width: '40%' }} ></Column>
-          <Column className='coluna' field="repositorio" header="Repositorio" sortable style={{ width: '20%', textAlign: 'center' }} ></Column>
+          <Column className='coluna' field="autor" header="Autor" sortable style={{ width: '8%', textAlign: 'center' }} ></Column>
+          <Column className='coluna' field="mensagem" header="Mensagem" sortable style={{ width: '38%' }} ></Column>
+          <Column className='coluna' field="repositorio" header="Repositorio" sortable style={{ width: '12%', textAlign: 'center' }} ></Column>
+          <Column className='coluna' field="data" header="Data" sortable style={{ width: '10%', textAlign: 'center' }} ></Column>
         </Grid> 
       </grid>
+      <Button
+        label="Imprimir"
+        id="imprimir"
+        icon="pi pi-print"
+      />
     </div>
   )
 }

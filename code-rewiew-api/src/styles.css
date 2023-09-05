@@ -4,7 +4,7 @@
 
 /* tela */
 .container{
-    height: 100vh;
+    min-height: 100vh;
     flex-direction: column;
     background: linear-gradient(#121212, #212b46);
 }
@@ -32,6 +32,13 @@
     width: 14%;
     margin-left: 10px;
     margin-right: 20px;
+}
+
+#imprimir{
+    font-weight: bold;
+    margin-top: 2%;
+    margin-left: 87%;
+    margin-bottom: 2%;
 }
 
 #pesquisar{
