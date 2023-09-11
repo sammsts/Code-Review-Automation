@@ -36,6 +36,9 @@ function Commits(){
   const handleDateFinalChange = (event) => {
     setSelectedDateFinal(event.target.value);
   };
+  const handleButtonClick = (rowData) => {
+    console.log(rowData.codigo)
+  };
 
   function converterData(dataString) {
     const data = new Date(dataString);
@@ -63,7 +66,6 @@ function Commits(){
   }
 
   const buscarCommits = async (nome, datainicial, datafinal) => {
-    debugger
     const token = process.env.REACT_APP_API_KEY
     const user = 'Abase-Sistemas';
     let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'sammsts', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7'];
@@ -208,6 +210,9 @@ function Commits(){
       </div>
       <grid id="gridMain">
         <Grid id="grid-commits" selection={commitsSelecionado} onSelectionChange={(e) => setCommitSelecionado(e.value)} value={commits}>
+          <Column className='coluna' body={(rowData) => (
+              <Button label="Detalhes" icon="pi pi-info-circle" onClick={() => handleButtonClick(rowData)} />
+            )} style={{ width: '3%', textAlign: 'center' }} />
           <Column className='coluna' field="codigo" header="Código" sortable style={{ width: '28%', textAlign: 'center' }}></Column>
           <Column className='coluna' field="autor" header="Autor" sortable style={{ width: '8%', textAlign: 'center' }} ></Column>
           <Column className='coluna' field="mensagem" header="Mensagem" sortable style={{ width: '38%' }} ></Column>
