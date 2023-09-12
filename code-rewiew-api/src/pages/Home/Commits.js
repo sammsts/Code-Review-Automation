@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './styles.css';
 import axios from 'axios';
+
 // prime react ---------------------------------
 import { Calendar } from 'primereact/calendar';
 import 'primereact/resources/themes/saga-blue/theme.css';
@@ -9,6 +10,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import Grid from '../../Componentes/grid';
 import { Column } from 'primereact/column';
+import { hideLoading, showLoading } from '../../Componentes/loading';
 //Chakra ---------------------------------------
 
 
@@ -27,6 +29,7 @@ function Commits(){
         { name: 'Fabricio', code: 'fabriciowiez' },
         { name: 'Marcus', code: 'MarcusVSN2022' },
         { name: 'Michel', code: 'michelmachado7' },
+        { name: 'Kevin', code: 'brissowkevin' },
         { name: 'Samuel', code: 'sammsts' }
     ];
 
@@ -35,6 +38,9 @@ function Commits(){
   };
   const handleDateFinalChange = (event) => {
     setSelectedDateFinal(event.target.value);
+  };
+  const handleButtonClick = (rowData) => {
+    console.log(rowData.codigo)
   };
 
   function converterData(dataString) {
@@ -63,7 +69,7 @@ function Commits(){
   }
 
   const buscarCommits = async (nome, datainicial, datafinal) => {
-    debugger
+    showLoading('commits')
     const token = process.env.REACT_APP_API_KEY
     const user = 'Abase-Sistemas';
     let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'sammsts', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7'];
@@ -103,6 +109,7 @@ function Commits(){
         pageGespam++;
       } catch (error) {
         console.error('Erro ao buscar os commits no Gespam:', error);
+        hideLoading('commits')
         break;
       }
     }
@@ -132,6 +139,7 @@ function Commits(){
         pageRelatorios++;
       } catch (error) {
         console.error('Erro ao buscar os commits no API Relatórios:', error);
+        hideLoading('commits')
         break;
       }
     }
@@ -161,15 +169,17 @@ function Commits(){
         pageRelatorios++;
       } catch (error) {
         console.error('Erro ao buscar os commits na Transparencia', error);
+        hideLoading('commits')
         break;
       }
     }
     setCommits(commits);
+    hideLoading('commits')
   };
   
 
   return (
-    <div className="container">
+    <div className="container" id="commits">
       <div className="ctnTitle">
         <h1 className="title">Commits tecnoURI</h1>
       </div>
@@ -194,8 +204,7 @@ function Commits(){
             onChange={(e) => setAtendente(e.value)} 
             options={atendentes} 
             optionLabel="name" 
-            placeholder="Atendente"
-            showClear
+            placeholder="Todos"
             id="selectAtendente"
           />
           <Button
@@ -208,6 +217,9 @@ function Commits(){
       </div>
       <grid id="gridMain">
         <Grid id="grid-commits" selection={commitsSelecionado} onSelectionChange={(e) => setCommitSelecionado(e.value)} value={commits}>
+          <Column className='coluna' body={(rowData) => (
+              <Button label="" icon="pi pi-info-circle" onClick={() => handleButtonClick(rowData)} />
+            )} style={{ width: '3%', textAlign: 'center' }} />
           <Column className='coluna' field="codigo" header="Código" sortable style={{ width: '28%', textAlign: 'center' }}></Column>
           <Column className='coluna' field="autor" header="Autor" sortable style={{ width: '8%', textAlign: 'center' }} ></Column>
           <Column className='coluna' field="mensagem" header="Mensagem" sortable style={{ width: '38%' }} ></Column>

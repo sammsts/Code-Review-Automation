@@ -5,24 +5,26 @@ import useAuth from "./hooks/useAuth"
 import Login from './pages/Login/Login';
 import Commits from './pages/Home/Commits';
 
-const Private = ({ Item }) => {
-    const { logado } = useAuth();
+// const Private = ({ Item }) => {
+//     const { logado } = useAuth();
 
-    return logado > 0 ? <Item /> : <Login />;
-}
+//     return logado > 0 ? <Item /> : <Login />;
+// }
 
 const RoutesApp = () => {
     return (
         <BrowserRouter>
-            <Fragment>
+             {/* <Fragment> */}
                 <Routes>
-                    <Route exact path="/commits" element={<Private Item={Commits} />} />
-                    <Route path="/" element={<Login />} />
+                    <Route path="/commits" element={ <Commits/> } />
+                    <Route path="/login" element={ <Login/> } />
+                    {/* <Route exact path="/commits" element={<Private Item={Commits} />} /> */}
+                    {/* <Route path="/" element={<Login />} />
                     <Route exact path="/login" element={<Login />} />
-                    <Route path="*" element={<Login />} />
+                    <Route path="*" element={<Login />} /> */}
                 </Routes>
-            </Fragment>
-        </BrowserRouter>
+             {/* </Fragment> */}
+         </BrowserRouter>
     );
 };
 
