@@ -1,7 +1,7 @@
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize('kinkznez', 'kinkznez', 'WjNTUuURc8E6ZKhSpxfY6JxAaYgAEniA', {
-  host: 'motty.db.elephantsql.com',
+const sequelize = new Sequelize('Code-Review-Automation', 'postgres', '123456', {
+  host: 'localhost',
   dialect: 'postgres',
 });
 
