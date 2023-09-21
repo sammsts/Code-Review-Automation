@@ -110,9 +110,7 @@ function CommitsDetalhes({isOpen, onClose, commitCode, repositorio}) {
               </TabPanel>
               <TabPanel>
                 <Grid id="grid-arquivos" value={arquivos}>
-                  <Column className='coluna' field="mensagem" header="Mensagem" sortable style={{ width: '38%' }} ></Column>
-                  <Column className='coluna' field="repositorio" header="Repositorio" sortable style={{ width: '12%', textAlign: 'center' }} ></Column>
-                  <Column className='coluna' field="data" header="Data" sortable style={{ width: '10%', textAlign: 'center' }} ></Column>
+                  <Column className='coluna' field="arquivo" header="Arquivo" sortable style={{ width: '100%' }} ></Column>
                 </Grid> 
               </TabPanel>
             </TabPanels>

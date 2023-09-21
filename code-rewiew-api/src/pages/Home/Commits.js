@@ -37,7 +37,7 @@ function Commits(){
         { name: 'Marcus', code: 'MarcusVSN2022' },
         { name: 'Michel', code: 'michelmachado7' },
         { name: 'Kevin', code: 'brissowkevin' },
-        { name: 'Samuel', code: 'sammsts' }
+        { name: 'Samuel', code: 'SAMu3lms' }
     ];
 
   const handleDateInitialChange = (event) => {
@@ -68,7 +68,7 @@ function Commits(){
     switch(nome){
       case 'augustowjerke': return 'Augusto'; break;
       case 'fabriciowiez': return 'Fabrício'; break;
-      case 'sammsts': return 'Samuel'; break;
+      case 'SAMu3lms': return 'Samuel'; break;
       case 'arturcmeneghini': return 'Artur'; break;
       case 'MarcusVSN2022': return 'Marcus'; break;
       case 'AdrianoJMReidel': return 'Adriano'; break;
@@ -77,11 +77,11 @@ function Commits(){
     }
   }
 
-  const buscarCommits = async (nome, datainicial, datafinal) => {
+  const buscarCommits = async (nome, datainicial, datafinal) => { 
     showLoading('commits')
     const token = process.env.REACT_APP_API_KEY
     const user = 'Abase-Sistemas';
-    let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'sammsts', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7'];
+    let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'SAMu3lms', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7'];
     if(nome != undefined){
       if(nome.name != 'Todos')
       usuariosDesejados = [nome.code]
