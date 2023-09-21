@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './styles.css';
 import axios from 'axios';
+import CommitsDetalhes from './CommitsDetalhes';
 
 // prime react ---------------------------------
 import { Calendar } from 'primereact/calendar';
@@ -16,8 +17,14 @@ import { hideLoading, showLoading } from '../../Componentes/loading';
 
 function Commits(){
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
   const [selectedDateInitial, setSelectedDateInitial] = useState('');
   const [selectedDateFinal, setSelectedDateFinal] = useState('');
+  const [codigo, setCodigo] = useState('');
+  const [repositorio, setRepositorio] = useState('');
   const [commits, setCommits] = useState([]);
   const [commitsSelecionado, setCommitSelecionado] = useState('');
   const [atendendente, setAtendente] = useState('');
@@ -40,7 +47,9 @@ function Commits(){
     setSelectedDateFinal(event.target.value);
   };
   const handleButtonClick = (rowData) => {
-    console.log(rowData.codigo)
+    setCodigo(rowData.codigo);
+    setRepositorio(rowData.repositorio)
+    openModal(); 
   };
 
   function converterData(dataString) {
@@ -95,6 +104,7 @@ function Commits(){
         if (pageCommits.length === 0) {
           break;
         }
+        console.log(pageCommits)
         commits = commits.concat(
           pageCommits.filter((commit) =>
             usuariosDesejados.includes(commit.commit.author.name) && !commit.commit.message.includes('Merge branch')
@@ -144,7 +154,7 @@ function Commits(){
       }
     }
 
-    // API_RELATORIOS
+    // transp
     pageRelatorios = 1;
     while (true) {
       const apiUrl = `https://api.github.com/repos/${user}/Portal_Transparencia/commits?since=${dataInicio}&until=${dataFim}&page=${pageRelatorios}`;
@@ -183,7 +193,6 @@ function Commits(){
       <div className="ctnTitle">
         <h1 className="title">Commits tecnoURI</h1>
       </div>
-
       <div className="ctnInputFiltros">
         <div className="datePickerContainer">
           <Calendar
@@ -227,6 +236,12 @@ function Commits(){
           <Column className='coluna' field="data" header="Data" sortable style={{ width: '10%', textAlign: 'center' }} ></Column>
         </Grid> 
       </grid>
+      {isModalOpen && <CommitsDetalhes
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        commitCode={codigo}
+        repositorio={repositorio}
+      />}
       <Button
         label="Imprimir"
         id="imprimir"

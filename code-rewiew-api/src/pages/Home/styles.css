@@ -28,6 +28,39 @@
     transform: scale(1.1);
 }
 
+.modal-1{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.linhas{
+    display: flex;
+    justify-content: center;
+    gap: 25%;
+    margin-top: 2%;
+    margin-right: 40%;
+}
+
+.rodape{
+    display: flex;
+    justify-content: space-between;
+    gap: 69%;
+}
+
+.cabecalho{
+    width: 100%;
+    display: flex;
+}
+
+.foto{
+    width: 36%;
+}
+
+.nome{
+    width: 100%;
+}
+
 #selectAtendente{
     width: 14%;
     margin-left: 10px;
