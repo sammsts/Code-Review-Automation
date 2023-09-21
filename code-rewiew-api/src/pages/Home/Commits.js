@@ -28,6 +28,12 @@ function Commits(){
   const [commits, setCommits] = useState([]);
   const [commitsSelecionado, setCommitSelecionado] = useState('');
   const [atendendente, setAtendente] = useState('');
+  const repositorios = [
+    { name: 'Todos', code: '' },
+    { name: 'GespamWeb', code: 'GespamWeb' },
+    { name: 'Portal da Transparência', code: 'Portal_Transparencia' },
+    { name: 'Api (relatórios)', code: 'relatorios-gespam' }
+];
   const atendentes = [
         { name: 'Todos', code: '' },
         { name: 'Adriano', code: 'AdrianoJMReidel' },
@@ -77,15 +83,20 @@ function Commits(){
     }
   }
 
-  const buscarCommits = async (nome, datainicial, datafinal) => { 
+  const buscarCommits = async (nome, repositorio, datainicial, datafinal) => { 
     showLoading('commits')
     const token = process.env.REACT_APP_API_KEY
     const user = 'Abase-Sistemas';
     let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'SAMu3lms', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7'];
-    if(nome != undefined){
-      if(nome.name != 'Todos')
+
+    if(nome.code != undefined){
       usuariosDesejados = [nome.code]
     }
+
+    if (nome.includes('')) {
+      usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'SAMu3lms', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7'];
+    }
+
     let dataInicio = datainicial
     let dataFim = datafinal;
     const headers = {
@@ -93,96 +104,74 @@ function Commits(){
     };
     let commits = [];
   
-    // GESPAM
-    const gespamRepoName = 'GespamWeb';
-    let pageGespam = 1;
-    while (true) {
-      const apiUrl = `https://api.github.com/repos/${user}/${gespamRepoName}/commits?since=${dataInicio}&until=${dataFim}&page=${pageGespam}`;
-      try {
-        const response = await axios.get(apiUrl, { headers });
-        const pageCommits = response.data;
-        if (pageCommits.length === 0) {
-          break;
+    if(repositorio != undefined){
+      if (repositorio != '') {
+        let pageGespam = 1;
+        while (true) {
+          const apiUrl = `https://api.github.com/repos/${user}/${repositorio.code}/commits?since=${dataInicio}&until=${dataFim}&page=${pageGespam}`;
+          try {
+            const response = await axios.get(apiUrl, { headers });
+            const pageCommits = response.data;
+            if (pageCommits.length === 0) {
+              break;
+            }
+            console.log(pageCommits)
+            commits = commits.concat(
+              pageCommits.filter((commit) =>
+                usuariosDesejados.includes(commit.commit.author.name) && !commit.commit.message.includes('Merge branch')
+              ).map((commit) => ({
+                codigo: commit.sha,
+                autor: trocarNome(commit.commit.author.name),
+                mensagem: commit.commit.message,
+                repositorio: repositorio.name,
+                data: converterData(commit.commit.author.date)
+              }))
+            );
+            pageGespam++;
+          } catch (error) {
+            console.error('Erro ao buscar os commits no ' + repositorio.name + ': ', error);
+            hideLoading('commits')
+            break;
+          }
         }
-        console.log(pageCommits)
-        commits = commits.concat(
-          pageCommits.filter((commit) =>
-            usuariosDesejados.includes(commit.commit.author.name) && !commit.commit.message.includes('Merge branch')
-          ).map((commit) => ({
-            codigo: commit.sha,
-            autor: trocarNome(commit.commit.author.name),
-            mensagem: commit.commit.message,
-            repositorio: 'Gespam',
-            data: converterData(commit.commit.author.date)
-          }))
-        );
-        pageGespam++;
-      } catch (error) {
-        console.error('Erro ao buscar os commits no Gespam:', error);
-        hideLoading('commits')
-        break;
+      }
+      else {
+        for (let i = 0; i < 3; i++) {
+          let pageTodos = 1;
+          const repos = [
+            { name: 'GespamWeb', code: 'GespamWeb' },
+            { name: 'Portal da Transparência', code: 'Portal_Transparencia' },
+            { name: 'Api (relatórios)', code: 'relatorios-gespam' }
+        ];
+            const apiUrl = `https://api.github.com/repos/${user}/${repos[i].code}/commits?since=${dataInicio}&until=${dataFim}&page=${pageTodos}`;
+            try {
+              const response = await axios.get(apiUrl, { headers });
+              const pageCommits = response.data;
+              if (pageCommits.length === 0) {
+                break;
+              }
+              console.log(pageCommits);
+              commits = commits.concat(
+                pageCommits.filter((commit) =>
+                  usuariosDesejados.includes(commit.commit.author.name) && !commit.commit.message.includes('Merge branch')
+                ).map((commit) => ({
+                  codigo: commit.sha,
+                  autor: trocarNome(commit.commit.author.name),
+                  mensagem: commit.commit.message,
+                  repositorio: repos[i].name,
+                  data: converterData(commit.commit.author.date),
+                }))
+              );
+              pageTodos++;
+            } catch (error) {
+              console.error('Erro ao buscar os commits no ' + repositorio[i].name + ': ', error);
+              hideLoading('commits');
+              break;
+            }
+        }
       }
     }
   
-    // API_RELATORIOS
-    const relatoriosRepoName = 'relatorios-gespam';
-    let pageRelatorios = 1;
-    while (true) {
-      const apiUrl = `https://api.github.com/repos/${user}/${relatoriosRepoName}/commits?since=${dataInicio}&until=${dataFim}&page=${pageRelatorios}`;
-      try {
-        const response = await axios.get(apiUrl, { headers });
-        const pageCommits = response.data;
-        if (pageCommits.length === 0) {
-          break;
-        }
-        commits = commits.concat(
-          pageCommits.filter((commit) =>
-            usuariosDesejados.includes(commit.commit.author.name) && !commit.commit.message.includes('Merge branch')
-          ).map((commit) => ({
-            codigo: commit.sha,
-            autor: trocarNome(commit.commit.author.name),
-            mensagem: commit.commit.message,
-            repositorio: 'API Relatórios',
-            data: converterData(commit.commit.author.date)
-          }))
-        );
-        pageRelatorios++;
-      } catch (error) {
-        console.error('Erro ao buscar os commits no API Relatórios:', error);
-        hideLoading('commits')
-        break;
-      }
-    }
-
-    // transp
-    pageRelatorios = 1;
-    while (true) {
-      const apiUrl = `https://api.github.com/repos/${user}/Portal_Transparencia/commits?since=${dataInicio}&until=${dataFim}&page=${pageRelatorios}`;
-      try {
-        const response = await axios.get(apiUrl, { headers });
-        const pageCommits = response.data;
-        if (pageCommits.length === 0) {
-          break;
-        }
-
-        commits = commits.concat(
-          pageCommits.filter((commit) =>
-            usuariosDesejados.includes(commit.commit.author.name) && !commit.commit.message.includes('Merge branch')
-          ).map((commit) => ({
-            codigo: commit.sha,
-            autor: trocarNome(commit.commit.author.name),
-            mensagem: commit.commit.message,
-            repositorio: 'Transparência',
-            data: converterData(commit.commit.author.date)
-          }))
-        );
-        pageRelatorios++;
-      } catch (error) {
-        console.error('Erro ao buscar os commits na Transparencia', error);
-        hideLoading('commits')
-        break;
-      }
-    }
     setCommits(commits);
     hideLoading('commits')
   };
@@ -209,6 +198,15 @@ function Commits(){
             style={{ marginLeft: '10px' }}
           />
           <Dropdown
+            value={repositorio} 
+            onChange={(e) => setRepositorio(e.value)} 
+            options={repositorios} 
+            optionLabel="name" 
+            placeholder="Todos"
+            style={{ marginLeft: '10px' }}
+            id="selectRepositorios"
+          />
+          <Dropdown
             value={atendendente} 
             onChange={(e) => setAtendente(e.value)} 
             options={atendentes} 
@@ -219,7 +217,7 @@ function Commits(){
           <Button
             label="Pesquisar"
             id="pesquisar"
-            onClick={() => buscarCommits(atendendente, selectedDateInitial, selectedDateFinal)}
+            onClick={() => buscarCommits(atendendente, repositorio, selectedDateInitial, selectedDateFinal)}
             icon='pi pi-search'
           />
         </div>
