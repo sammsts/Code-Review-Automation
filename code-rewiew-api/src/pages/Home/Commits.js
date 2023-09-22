@@ -102,7 +102,7 @@ function Commits(){
     const user = 'Abase-Sistemas';
     let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'SAMu3lms', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7'];
 
-    if (nome !== '') {
+    if (nome.code !== '') {
       usuariosDesejados = [nome.code];
     }
 
@@ -194,7 +194,7 @@ function Commits(){
 
   useEffect(() => {
     setInitialDates();
-    buscarCommits('', repositorioVazio, dataInicial, dataFinal);
+    buscarCommits({ name: 'Todos', code: '' }, repositorioVazio, dataInicial, dataFinal);
   }, []);
   
 
