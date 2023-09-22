@@ -35,16 +35,15 @@ function CommitsDetalhes({isOpen, onClose, commitCode, repositorio}) {
 
   useEffect(() => {
     const fetchCommitInfo = async () => {
+      debugger
       showLoading("commits");
 
       switch(repositorio)
       {
-        case "Gespam": repositorio = "GespamWeb"; break;
-        case "API Relatórios": repositorio = "relatorios-gespam"; break;
-        case "Transparência": repositorio = "Portal_Transparencia"; break;
+        case "Api (relatórios)": repositorio = "relatorios-gespam"; break;
+        case "Portal da Transparência": repositorio = "Portal_Transparencia"; break;
         default: return;
       }
-
       try {
         const response = await axios.get(
           `https://api.github.com/repos/Abase-Sistemas/${repositorio}/commits/${commitCode}`,
@@ -56,6 +55,7 @@ function CommitsDetalhes({isOpen, onClose, commitCode, repositorio}) {
         );
 
         if (response.status === 200) {
+          let arquivosJSON = []
           const commitInfo = response.data;
           console.log("Informações do Commit:", commitInfo);
           setUrlAvatar(commitInfo.author.avatar_url)
@@ -64,6 +64,12 @@ function CommitsDetalhes({isOpen, onClose, commitCode, repositorio}) {
           setLinRemovidas(commitInfo.stats.deletions)
           setMensagem(commitInfo.commit.message)
           setUrl(commitInfo.html_url)
+          for (let i = 0; i < commitInfo.files.length; i++) {
+            arquivosJSON.push({
+              arquivo: commitInfo.files[i].filename
+            });
+          }
+          setArquivos(arquivosJSON)
           setCommit(commitInfo);
         } else {
           console.error("Erro ao buscar informações do commit:", response.status);
