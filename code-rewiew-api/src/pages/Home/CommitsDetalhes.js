@@ -35,7 +35,6 @@ function CommitsDetalhes({isOpen, onClose, commitCode, repositorio}) {
 
   useEffect(() => {
     const fetchCommitInfo = async () => {
-      debugger
       showLoading("commits");
 
       switch(repositorio)

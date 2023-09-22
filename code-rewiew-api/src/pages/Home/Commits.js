@@ -57,7 +57,7 @@ function Commits(){
     setRepositorio(rowData.repositorio)
     openModal(); 
   };
-
+  
   function converterData(dataString) {
     const data = new Date(dataString);
   
@@ -83,41 +83,80 @@ function Commits(){
     }
   }
 
-  const buscarCommits = async (nome, repositorio, datainicial, datafinal) => { 
-    showLoading('commits')
-    const token = process.env.REACT_APP_API_KEY
+  const setInitialDates = () => {
+    const dataAtual = new Date();
+
+    const selectedDateInitial = new Date(dataAtual);
+    selectedDateInitial.setHours(0, 0, 0, 0);
+
+    const selectedDateFinal = new Date(dataAtual);
+    selectedDateFinal.setHours(23, 59, 59, 999);
+
+    setSelectedDateInitial(selectedDateInitial);
+    setSelectedDateFinal(selectedDateFinal);
+  };
+
+  const buscarCommits = async (nome, repositorio, datainicial, datafinal) => {
+    showLoading('commits');
+    const token = process.env.REACT_APP_API_KEY;
     const user = 'Abase-Sistemas';
     let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'SAMu3lms', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7'];
 
-    if(nome != ''){
-      usuariosDesejados = [nome.code]
-    }
-
-    let dataInicio = datainicial
-    let dataFim = datafinal;
-    if(dataInicio == ''){
-      dataInicio = new Date('2020-01-01T00:00:00-03:00');
-    }
-    if(dataFim == ''){
-      dataFim = new Date('2030-01-01T00:00:00-03:00');
+    if (nome !== '') {
+      usuariosDesejados = [nome.code];
     }
 
     const headers = {
       Authorization: `token ${token}`,
     };
+
     let commits = [];
-  
-    if(repositorio != ''){
-        let pageGespam = 1;
-        while (true) {
-          const apiUrl = `https://api.github.com/repos/${user}/${repositorio.code}/commits?since=${dataInicio}&until=${dataFim}&page=${pageGespam}`;
+
+    if (repositorio.code !== '') {
+      let pageGespam = 1;
+      while (true) {
+        const apiUrl = `https://api.github.com/repos/${user}/${repositorio.code}/commits?since=${datainicial}&until=${datafinal}&page=${pageGespam}`;
+        try {
+          const response = await axios.get(apiUrl, { headers });
+          const pageCommits = response.data;
+          if (pageCommits.length === 0) {
+            break;
+          }
+          console.log(pageCommits);
+          commits = commits.concat(
+            pageCommits.filter((commit) =>
+              usuariosDesejados.includes(commit.commit.author.name) && !commit.commit.message.includes('Merge branch')
+            ).map((commit) => ({
+              codigo: commit.sha,
+              autor: trocarNome(commit.commit.author.name),
+              mensagem: commit.commit.message,
+              repositorio: repositorio.name,
+              data: converterData(commit.commit.author.date),
+            }))
+          );
+          pageGespam++;
+        } catch (error) {
+          console.error('Erro ao buscar os commits no ' + repositorio.name + ': ', error);
+            break;
+        }
+      }
+    } else {
+      const repos = [
+        { name: 'GespamWeb', code: 'GespamWeb' },
+        { name: 'Portal da Transparência', code: 'Portal_Transparencia' },
+        { name: 'Api (relatórios)', code: 'relatorios-gespam' },
+      ];
+      let pageTodos = 1;
+      for (let i = 0; i < 3; i++) {
+        while(true){
+          const apiUrl = `https://api.github.com/repos/${user}/${repos[i].code}/commits?since=${datainicial}&until=${datafinal}&page=${pageTodos}`;
           try {
             const response = await axios.get(apiUrl, { headers });
             const pageCommits = response.data;
             if (pageCommits.length === 0) {
               break;
             }
-            console.log(pageCommits)
+            console.log(pageCommits);
             commits = commits.concat(
               pageCommits.filter((commit) =>
                 usuariosDesejados.includes(commit.commit.author.name) && !commit.commit.message.includes('Merge branch')
@@ -125,57 +164,38 @@ function Commits(){
                 codigo: commit.sha,
                 autor: trocarNome(commit.commit.author.name),
                 mensagem: commit.commit.message,
-                repositorio: repositorio.name,
-                data: converterData(commit.commit.author.date)
+                repositorio: repos[i].name,
+                data: converterData(commit.commit.author.date),
               }))
             );
-            pageGespam++;
+            pageTodos++;
           } catch (error) {
-            console.error('Erro ao buscar os commits no ' + repositorio.name + ': ', error);
-            hideLoading('commits')
+            console.error('Erro ao buscar os commits no ' + repositorio[i].name + ': ', error);
             break;
           }
         }
-      } 
-      else {
-        for (let i = 0; i < 3; i++) {
-          let pageTodos = 1;
-          const repos = [
-            { name: 'GespamWeb', code: 'GespamWeb' },
-            { name: 'Portal da Transparência', code: 'Portal_Transparencia' },
-            { name: 'Api (relatórios)', code: 'relatorios-gespam' }
-        ];
-            const apiUrl = `https://api.github.com/repos/${user}/${repos[i].code}/commits?since=${dataInicio}&until=${dataFim}&page=${pageTodos}`;
-            try {
-              const response = await axios.get(apiUrl, { headers });
-              const pageCommits = response.data;
-              if (pageCommits.length === 0) {
-                break;
-              }
-              console.log(pageCommits);
-              commits = commits.concat(
-                pageCommits.filter((commit) =>
-                  usuariosDesejados.includes(commit.commit.author.name) && !commit.commit.message.includes('Merge branch')
-                ).map((commit) => ({
-                  codigo: commit.sha,
-                  autor: trocarNome(commit.commit.author.name),
-                  mensagem: commit.commit.message,
-                  repositorio: repos[i].name,
-                  data: converterData(commit.commit.author.date),
-                }))
-              );
-              pageTodos++;
-            } catch (error) {
-              console.error('Erro ao buscar os commits no ' + repositorio[i].name + ': ', error);
-              hideLoading('commits');
-              break;
-            }
-        }
       }
-  
+    }
+
     setCommits(commits);
-    hideLoading('commits')
+    hideLoading('commits');
   };
+
+  const repositorioVazio = { name: 'Todos', code: '' };
+
+  const dataAtual = new Date();
+
+  const dataInicial = new Date(dataAtual);
+  dataInicial.setHours(0, 0, 0, 0);
+
+  const dataFinal = new Date(dataAtual);
+  dataFinal.setHours(23, 59, 59, 999);
+
+
+  useEffect(() => {
+    setInitialDates();
+    buscarCommits('', repositorioVazio, dataInicial, dataFinal);
+  }, []);
   
 
   return (
@@ -190,16 +210,18 @@ function Commits(){
             onChange={(e) => setSelectedDateInitial(e.value)}
             showIcon
             placeholder="Informe a data inicial"
+            dateFormat="dd/mm/yy"
           />
           <Calendar
             value={selectedDateFinal}
             onChange={(e) => setSelectedDateFinal(e.value)}
             showIcon
             placeholder="Informe a data final"
+            dateFormat="dd/mm/yy"
             style={{ marginLeft: '10px' }}
           />
           <Dropdown
-            value={repositorio || ''} 
+            value={repositorio} 
             onChange={(e) => setRepositorio(e.value)} 
             options={repositorios} 
             optionLabel="name" 
@@ -218,7 +240,10 @@ function Commits(){
           <Button
             label="Pesquisar"
             id="pesquisar"
-            onClick={() => buscarCommits(atendendente, repositorio, selectedDateInitial, selectedDateFinal)}
+            onClick={() => {
+              const selectedRepo = repositorio === '' ? { name: 'Todos', code: '' } : repositorio;
+              buscarCommits(atendendente, selectedRepo, selectedDateInitial, selectedDateFinal);
+            }}
             icon='pi pi-search'
           />
         </div>
