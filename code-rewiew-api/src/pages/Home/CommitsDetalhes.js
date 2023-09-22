@@ -40,6 +40,7 @@ function CommitsDetalhes({isOpen, onClose, commitCode, repositorio}) {
 
       switch(repositorio)
       {
+        case "GespamWeb": repositorio = "GespamWeb"; break;
         case "Api (relatórios)": repositorio = "relatorios-gespam"; break;
         case "Portal da Transparência": repositorio = "Portal_Transparencia"; break;
         default: return;
