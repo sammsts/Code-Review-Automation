@@ -89,23 +89,25 @@ function Commits(){
     const user = 'Abase-Sistemas';
     let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'SAMu3lms', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7'];
 
-    if(nome.code != undefined){
+    if(nome != ''){
       usuariosDesejados = [nome.code]
-    }
-
-    if (nome.includes('')) {
-      usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'SAMu3lms', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7'];
     }
 
     let dataInicio = datainicial
     let dataFim = datafinal;
+    if(dataInicio == ''){
+      dataInicio = new Date('2020-01-01T00:00:00-03:00');
+    }
+    if(dataFim == ''){
+      dataFim = new Date('2030-01-01T00:00:00-03:00');
+    }
+
     const headers = {
       Authorization: `token ${token}`,
     };
     let commits = [];
   
-    if(repositorio != undefined){
-      if (repositorio != '') {
+    if(repositorio != ''){
         let pageGespam = 1;
         while (true) {
           const apiUrl = `https://api.github.com/repos/${user}/${repositorio.code}/commits?since=${dataInicio}&until=${dataFim}&page=${pageGespam}`;
@@ -134,7 +136,7 @@ function Commits(){
             break;
           }
         }
-      }
+      } 
       else {
         for (let i = 0; i < 3; i++) {
           let pageTodos = 1;
@@ -170,7 +172,6 @@ function Commits(){
             }
         }
       }
-    }
   
     setCommits(commits);
     hideLoading('commits')
@@ -198,7 +199,7 @@ function Commits(){
             style={{ marginLeft: '10px' }}
           />
           <Dropdown
-            value={repositorio} 
+            value={repositorio || ''} 
             onChange={(e) => setRepositorio(e.value)} 
             options={repositorios} 
             optionLabel="name" 
