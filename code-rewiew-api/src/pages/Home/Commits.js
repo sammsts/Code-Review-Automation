@@ -146,8 +146,8 @@ function Commits(){
         { name: 'Portal da Transparência', code: 'Portal_Transparencia' },
         { name: 'Api (relatórios)', code: 'relatorios-gespam' },
       ];
-      let pageTodos = 1;
       for (let i = 0; i < 3; i++) {
+        let pageTodos = 1;
         while(true){
           const apiUrl = `https://api.github.com/repos/${user}/${repos[i].code}/commits?since=${datainicial}&until=${datafinal}&page=${pageTodos}`;
           try {
