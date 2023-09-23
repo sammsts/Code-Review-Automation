@@ -1,8 +1,7 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../database');
-const { QueryTypes } = require('sequelize');
+// import { sequelize } from '../database.js';
+// import QueryTypes from 'sequelize';
 
-const Validar = async (email, senha) => {
+const autenticar = async (email, senha) => {
   try {
     const sql = `
       SELECT * FROM Usuario
@@ -10,10 +9,11 @@ const Validar = async (email, senha) => {
       AND usu_senha = :senha
     `;
 
-    const resultado = await sequelize.query(sql, {
-      replacements: { email, senha },
-      type: QueryTypes.SELECT,
-    });
+    // const resultado = await sequelize.query(sql, {
+    //   replacements: { email, senha },
+    //   type: QueryTypes.SELECT,
+    // });
+      const resultado = [];
 
     if (resultado.length > 0) {
       return true;
@@ -26,4 +26,4 @@ const Validar = async (email, senha) => {
   }
 };
 
-module.exports = Validar;
+export { autenticar };

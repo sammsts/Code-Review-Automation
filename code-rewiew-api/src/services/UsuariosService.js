@@ -1,8 +1,8 @@
-const { Validar } = require('../models/usuario');
+import { autenticar } from '../models/Usuarios.js';
 
-const validarUsuario = async (nome, senha) => {
+const autenticarUsuario = async (nome, senha) => {
   try {
-    const validacaoUsuario = await Validar(nome, senha);
+    const validacaoUsuario = await autenticar(nome, senha);
     if (validacaoUsuario) {
       return true;
     }
@@ -12,7 +12,5 @@ const validarUsuario = async (nome, senha) => {
     throw new Error('Erro ao validar usuário.');
   }
 };
-
-module.exports = {
-    validarUsuario,
-};
+  
+export { autenticarUsuario };
