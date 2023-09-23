@@ -2,31 +2,33 @@ import React, { useState, useEffect } from 'react';
 import Input from "../../Componentes/Input";
 import Button from "../../Componentes/Button";
 import * as C from "./styles";
-import { Link, useNavigate } from "react-router-dom";
- import useAuth from "../../hooks/useAuth";
+import { Link, useNavigate } from "react-router-dom"; 
+import { validarUsuario } from '../../controllers/UsuariosController.js';
 
 const Login = () => {
-    const { login } = useAuth();
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     const [error, setError] = useState("");
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
         if (!email | !senha) {
           setError("Preencha todos os campos");
           return;
         }
     
-        const res = login(email, senha);
-    
-        if (res) {
-          setError(res);
-          return;
+        try {
+            const res = await validarUsuario(email, senha);
+
+            if (res) {
+                setError(res);
+            } else {
+                navigate("/commits");
+            }
+        } catch (error) {
+            console.error('Erro ao fazer login:', error);
         }
-    
-        navigate("/commits");
       };
 
     return (
