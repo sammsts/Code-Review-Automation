@@ -21,8 +21,8 @@ const Login = () => {
         try {
             const res = await validarUsuario(email, senha);
 
-            if (res) {
-                setError(res);
+            if (!res) {
+                setError("Usuário não autenticado");
             } else {
                 navigate("/commits");
             }

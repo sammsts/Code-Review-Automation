@@ -1,29 +1,22 @@
-// import { sequelize } from '../database.js';
-// import QueryTypes from 'sequelize';
+import { Sequelize, DataTypes } from 'sequelize';
+import { sequelize } from '../database.js';
 
-const autenticar = async (email, senha) => {
-  try {
-    const sql = `
-      SELECT * FROM Usuario
-      WHERE usu_email = :email
-      AND usu_senha = :senha
-    `;
-
-    // const resultado = await sequelize.query(sql, {
-    //   replacements: { email, senha },
-    //   type: QueryTypes.SELECT,
-    // });
-      const resultado = [];
-
-    if (resultado.length > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error('Erro ao verificar credenciais:', error);
-    throw error;
+const Usuario = sequelize.define(
+  'Usuario',
+  {
+    usu_email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    usu_senha: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+  },
+  {
+    tableName: 'usuarios',
+    timestamps: false,
   }
-};
+);
 
-export { autenticar };
+export { Usuario };

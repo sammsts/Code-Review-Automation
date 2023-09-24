@@ -1,16 +1,25 @@
-import { autenticar } from '../models/Usuarios.js';
+import { Usuario } from '../models/Usuarios.js';
 
-const autenticarUsuario = async (nome, senha) => {
+async function autenticarUsuario(email, senha) {
   try {
-    const validacaoUsuario = await autenticar(nome, senha);
-    if (validacaoUsuario) {
-      return true;
+    const usuario = await Usuario.findOne({
+      where: {
+        usu_email: email,
+        usu_senha: senha,
+      },
+    });
+
+    if (usuario) {
+      console.log('Usuário autenticado:', usuario.usu_email);
+      return usuario;
+    } else {
+      console.log('Usuário não encontrado ou senha incorreta.');
+      return null;
     }
-    return false;
-  } catch (err) {
-    console.error('Erro ao validar usuário na Service:', err);
-    throw new Error('Erro ao validar usuário.');
+  } catch (error) {
+    console.error('Erro ao autenticar usuário:', error);
+    throw error;
   }
-};
-  
+}
+
 export { autenticarUsuario };
