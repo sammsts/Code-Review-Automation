@@ -1,4 +1,4 @@
-const path = require('path');
+const path =  require('path');
 
 module.exports = {
   entry: './src/index.js',
@@ -33,11 +33,11 @@ module.exports = {
         ],
       },
     ],
-  },
-  resolve: {
-    fallback: {
-      "crypto": require.resolve("crypto-browserify"),
-      "fs": require.resolve("fs")
+    resolve: {
+      fallback: {
+        fs: false, // Usar browserify-fs para resolver 'fs'
+        crypto: false, // Usar crypto-browserify para resolver 'crypto'
+      },
     },
   },
 };

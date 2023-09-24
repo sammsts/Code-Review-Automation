@@ -27,7 +27,7 @@ function Commits(){
   const [repositorio, setRepositorio] = useState('');
   const [commits, setCommits] = useState([]);
   const [commitsSelecionado, setCommitSelecionado] = useState('');
-  const [atendendente, setAtendente] = useState('');
+  const [atendente, setAtendente] = useState('');
   const repositorios = [
     { name: 'Todos', code: '' },
     { name: 'GespamWeb', code: 'GespamWeb' },
@@ -170,7 +170,7 @@ function Commits(){
             );
             pageTodos++;
           } catch (error) {
-            console.error('Erro ao buscar os commits no ' + repositorio[i].name + ': ', error);
+            console.error('Erro ao buscar os commits no ' + repos[i].name + ': ', error);
             break;
           }
         }
@@ -230,7 +230,7 @@ function Commits(){
             id="selectRepositorios"
           />
           <Dropdown
-            value={atendendente} 
+            value={atendente} 
             onChange={(e) => setAtendente(e.value)} 
             options={atendentes} 
             optionLabel="name" 
@@ -242,7 +242,8 @@ function Commits(){
             id="pesquisar"
             onClick={() => {
               const selectedRepo = repositorio === '' ? { name: 'Todos', code: '' } : repositorio;
-              buscarCommits(atendendente, selectedRepo, selectedDateInitial, selectedDateFinal);
+              const selectedAtde = atendente === '' ? { name: 'Todos', code: '' } : atendente;
+              buscarCommits(selectedAtde, selectedRepo, selectedDateInitial, selectedDateFinal);
             }}
             icon='pi pi-search'
           />
