@@ -3,7 +3,7 @@ import Input from "../../Componentes/Input";
 import Button from "../../Componentes/Button";
 import * as C from "./styles";
 import { Link, useNavigate } from "react-router-dom"; 
-import { validarUsuario } from '../../controllers/UsuariosController.js';
+import axios from 'axios';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -19,16 +19,19 @@ const Login = () => {
         }
     
         try {
-            const res = await validarUsuario(email, senha);
+            const response = await axios.get('http://localhost:3000/UsuariosController/validarUsuario', {
+                email: email,
+                senha: senha,
+            });
 
-            if (!res) {
-                setError("Usuário não autenticado");
+            if (!response.usuario) {
+                setError('Usuário não autenticado');
             } else {
-                navigate("/commits");
+                navigate('/commits');
             }
-        } catch (error) {
+            } catch (error) {
             console.error('Erro ao fazer login:', error);
-        }
+            }
       };
 
     return (
