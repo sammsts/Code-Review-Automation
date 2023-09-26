@@ -18,6 +18,7 @@ import { Divider } from '@chakra-ui/react'
 import { LinkIcon } from "@chakra-ui/icons";
 import Grid from "../../Componentes/grid";
 import { Column } from "primereact/column";
+import CommitsCodigo from "./CommitsCodigo";
 
 
 function CommitsDetalhes({isOpen, onClose, commitCode, repositorio}) {
@@ -28,8 +29,14 @@ function CommitsDetalhes({isOpen, onClose, commitCode, repositorio}) {
   const [mensagem, setMensagem] = useState('')
   const [linAdicionadas, setLinAdicionadas] = useState('')
   const [linRemovidas, setLinRemovidas] = useState('')
+  const [codigoArquivo, setCodigoArquivo] = useState('')
   const [url, setUrl] = useState('')
   const [arquivos, setArquivos] = useState([])
+  const [id, setId] = useState(0)
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   const abrirURL = () => {window.open(url, "_blank")}
 
@@ -37,13 +44,6 @@ function CommitsDetalhes({isOpen, onClose, commitCode, repositorio}) {
     const fetchCommitInfo = async () => {
       showLoading("commits");
 
-      switch(repositorio)
-      {
-        case "GespamWeb": repositorio = "GespamWeb"; break;
-        case "Api (relatórios)": repositorio = "relatorios-gespam"; break;
-        case "Portal da Transparência": repositorio = "Portal_Transparencia"; break;
-        default: return;
-      }
       try {
         const response = await axios.get(
           `https://api.github.com/repos/Abase-Sistemas/${repositorio}/commits/${commitCode}`,
@@ -84,6 +84,12 @@ function CommitsDetalhes({isOpen, onClose, commitCode, repositorio}) {
     fetchCommitInfo();
   }, [commitCode, repositorio]); 
 
+  function botaoCodigo(data){
+    console.log(commit.files[data].patch)
+    setCodigoArquivo(commit.files[data].patch)
+    setId(data+1)
+    openModal()
+  }
 
   return (
     <Modal isOpen={true} onClose={onClose} size={'4xl'} className="modal">
@@ -116,8 +122,16 @@ function CommitsDetalhes({isOpen, onClose, commitCode, repositorio}) {
               </TabPanel>
               <TabPanel>
                 <Grid id="grid-arquivos" value={arquivos}>
+                  <Column className='coluna' body={(rowData) => (
+                    <Button label="" icon="pi pi-info-circle" onClick={() => botaoCodigo(id)} />
+                  )} style={{ width: '3%', textAlign: 'center' }} />
                   <Column className='coluna' field="arquivo" header="Arquivo" sortable style={{ width: '100%' }} ></Column>
                 </Grid> 
+                {isModalOpen && <CommitsCodigo
+                  isOpen={isModalOpen}
+                  onClose={closeModal}
+                  codigo={codigoArquivo}
+                />}
               </TabPanel>
             </TabPanels>
           </Tabs>
