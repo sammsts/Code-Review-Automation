@@ -24,7 +24,7 @@ const Login = () => {
                 senha: senha,
             });
 
-            if (!response.usuario) {
+            if (!response) {
                 setError('Usuário não autenticado');
             } else {
                 navigate('/commits');
