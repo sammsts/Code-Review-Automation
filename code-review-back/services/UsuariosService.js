@@ -9,12 +9,12 @@ async function autenticarUsuario(email, senha) {
       },
     });
 
-    if (usuario) { debugger
+    if (usuario) {
       console.log('Usuário autenticado:', usuario.usu_email);
-      return usuario;
+      return true;
     } else {
       console.log('Usuário não encontrado ou senha incorreta.');
-      return null;
+      return false;
     }
   } catch (error) {
     console.error('Erro ao autenticar usuário:', error);
