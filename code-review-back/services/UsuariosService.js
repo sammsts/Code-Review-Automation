@@ -1,4 +1,4 @@
-import { Usuario } from '../models/Usuarios.js';
+const Usuario = require('../models/Usuarios.js');
 
 async function autenticarUsuario(email, senha) {
   try {
@@ -11,7 +11,7 @@ async function autenticarUsuario(email, senha) {
 
     if (usuario) {
       console.log('Usuário autenticado:', usuario.usu_email);
-      return true;
+      return {autenticado: true, usuario: usuario};
     } else {
       console.log('Usuário não encontrado ou senha incorreta.');
       return false;
@@ -22,4 +22,4 @@ async function autenticarUsuario(email, senha) {
   }
 }
 
-export { autenticarUsuario };
+module.exports = { autenticarUsuario };
