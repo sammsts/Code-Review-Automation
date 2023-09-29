@@ -25,6 +25,7 @@
 =======
     "fs": "^0.0.1-security",
     "graceful-fs": "^4.2.11",
+    "https": "^1.0.0",
     "path": "^0.12.7",
     "pg-hstore": "^2.3.4",
 >>>>>>> a0b5d04 (Mesclando da branch dev para test-monolítico)
@@ -43,7 +44,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set HTTPS=true&&react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

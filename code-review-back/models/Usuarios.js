@@ -1,23 +1,18 @@
-import { Sequelize, DataTypes } from 'sequelize';
-import { sequelize } from '../database.js';
-// const Sequelize = require('sequelize');
-// const database = require('../database.js');
-// const Usuario = database.define('usuario', {
-//   usu_email: {
-//     type: Sequelize.STRING,
-//     allowNull: false
-//   },
-//   usu_senha: {
-//     type: Sequelize.STRING,
-//     allowNull: false
-//   }
-// })
-
-// console.log("Usuarios: " + Usuario);
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = require('../database.js');
 
 const Usuario = sequelize.define(
   'Usuario',
   {
+    usu_id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    usu_nome: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     usu_email: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -33,5 +28,4 @@ const Usuario = sequelize.define(
   }
 );
 
-// module.export = Usuario;
-export { Usuario };
+module.exports = Usuario;
