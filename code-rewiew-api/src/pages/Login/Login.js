@@ -19,10 +19,9 @@ const Login = () => {
         }
     
         try {
-            process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-            const response = await axios.get(`https://localhost:3000/UsuariosController/validarUsuario?usu_email=${email}&usu_senha=${senha}`);
+            const response = await axios.get(`http://localhost:3000/UsuariosController/validarUsuario?usu_email=${email}&usu_senha=${senha}`);
 
-            if (response.data.autenticado) {
+            if (response.data) {
                 navigate('/commits');
             } else {
                 setError('Usuário não autenticado');
