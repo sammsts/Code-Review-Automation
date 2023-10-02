@@ -13,8 +13,8 @@ const RoutesApp = () => {
     return (
         <BrowserRouter>
                 <Routes>
+                    <Route path="" element={ <Login/> } />
                     <Route path="/commits" element={ <Commits/> } />
-                    <Route path="/login" element={ <Login/> } />
                 </Routes>
          </BrowserRouter>
     );

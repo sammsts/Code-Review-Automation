@@ -6,9 +6,9 @@ const validarUsuario = async (req, res) => {
   try {
     const usuario = await autenticarUsuario(usu_email, usu_senha);
     if (usuario.autenticado) {
-      res.status(200).json(usuario.usuario);
+      res.status(200).json(true);
     } else {
-      res.status(200).json(null);
+      res.status(200).json(false);
     }
   } catch (error) {
     console.error('Erro ao validar usuário na controller:', error);
