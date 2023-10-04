@@ -1,23 +1,20 @@
-import { React } from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login/Login';
 import Commits from './pages/Home/Commits';
-
-// const Private = ({ Item }) => {
-//     const { logado } = useAuth();
-
-//     return logado > 0 ? <Item /> : <Login />;
-// }
+import ProtectedRoutes from './Autentication/ProtectedRoutes';
 
 const RoutesApp = () => {
-    return (
-        <BrowserRouter>
-                <Routes>
-                    <Route path="" element={ <Login/> } />
-                    <Route path="/commits" element={ <Commits/> } />
-                </Routes>
-         </BrowserRouter>
-    );
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="" element={<Login />} />
+        <Route element={<ProtectedRoutes />}>
+          <Route path="/commits" element={<Commits />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 };
 
 export default RoutesApp;
