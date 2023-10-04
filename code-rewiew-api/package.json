@@ -19,6 +19,7 @@
     "framer-motion": "^10.16.2",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "html2pdf.js": "^0.10.1",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.6.0",
@@ -33,6 +34,16 @@
     "graceful-fs": "^4.2.11",
     "path": "^0.12.7",
 >>>>>>> a7c8b1a (Ajustes, retomando projeto NÃO monolítico.)
+=======
+    "graceful-fs": "^4.2.11",
+    "https": "^1.0.0",
+    "path": "^0.12.7",
+=======
+    "html2pdf.js": "^0.10.1",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.6.0",
+>>>>>>> 0661937c1815e07516b030d6c54e0524ea89c6f4
+>>>>>>> 18ad9ca54ae1860821283795d0853e29e05ead94
     "primeicons": "^6.0.1",
     "primereact": "^9.6.2",
     "react": "^18.2.0",

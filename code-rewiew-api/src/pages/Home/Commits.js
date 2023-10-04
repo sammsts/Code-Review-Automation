@@ -155,6 +155,7 @@ function Commits(){
 <<<<<<< HEAD
 <<<<<<< HEAD
             console.error('Erro ao buscar os commits no ' + repositorio.name + ': ', error);
+<<<<<<< HEAD
               break;
 =======
             console.error('Erro ao buscar os commits no ' + repos[i].name + ': ', error);
@@ -163,6 +164,9 @@ function Commits(){
 >>>>>>> 18ad9ca (mesclando branch dev com test-monolítico.)
             break;
 >>>>>>> d40ea23 (Iniciando sequelize)
+=======
+            break;
+>>>>>>> 18ad9ca54ae1860821283795d0853e29e05ead94
           }
         }
       };
