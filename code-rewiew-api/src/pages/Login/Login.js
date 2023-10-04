@@ -1,35 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import Input from "../../Componentes/Input";
-import Button from "../../Componentes/Button";
-import * as C from "./styles";
-import { Link, useNavigate } from "react-router-dom"; 
-import axios from 'axios';
+import React, { useState } from 'react';
+import Input from '../../Componentes/Input';
+import Button from '../../Componentes/Button';
+import * as C from './styles';
+import { useAuth } from '../../Autentication/AuthContext.js';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-    const navigate = useNavigate();
-
+    const { login } = useAuth();
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     const [error, setError] = useState("");
+    const navigate = useNavigate();
 
-    const handleLogin = async () => {
-        if (!email | !senha) {
-          setError("Preencha todos os campos");
-          return;
+    const handleLoginClick = async () => {
+        if (!email && !senha) {
+            setError("Preencha todos os campos");
+            return;
         }
-    
-        try {
-            const response = await axios.get(`http://localhost:3000/UsuariosController/validarUsuario?usu_email=${email}&usu_senha=${senha}`);
 
-            if (response.data) {
+        try {
+            const result = await login(email, senha);
+            if (result.loggedIn) {
                 navigate('/commits');
-            } else {
-                setError('Usuário não autenticado');
-            }
-            } catch (error) {
-                console.error('Erro ao fazer login:', error);
-            }
-      };
+              } else {
+                setError(result.error);
+              }
+          } catch (error) {
+            console.error('Erro ao fazer login:', error);
+          }
+    };
 
     return (
         <C.Container>
@@ -39,19 +38,19 @@ const Login = () => {
                     type="email"
                     placeholder="Digite seu E-mail"
                     value={email}
-                    onChange={(e) => [setEmail(e.target.value), setError("")]}
+                    onChange={(e) => setEmail(e.target.value)}
                 />
                 <Input
                     type="senha"
                     placeholder="Digite sua Senha"
                     value={senha}
-                    onChange={(e) => [setSenha(e.target.value), setError("")]}
+                    onChange={(e) => setSenha(e.target.value)}
                 />
                 <C.labelError>{error}</C.labelError>
-                <Button Text="Entrar" onClick={handleLogin} />
+                <Button Text="Entrar" onClick={handleLoginClick} />
             </C.Content>
         </C.Container>
     );
 };
 
-export default Login
+export default Login;

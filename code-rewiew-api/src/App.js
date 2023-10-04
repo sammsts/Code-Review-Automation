@@ -1,10 +1,13 @@
-import React from "react";
-import RoutesApp from "./routes";
+import React from 'react';
+import RoutesApp from './routes';
+import { AuthProvider } from './Autentication/AuthContext.js';
 
-function App() {
-    return (
-        <RoutesApp />
-    )
-}
+const App = () => {
+  return (
+    <AuthProvider>
+      <RoutesApp />
+    </AuthProvider>
+  );
+};
 
 export default App;
