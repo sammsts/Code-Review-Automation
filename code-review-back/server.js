@@ -7,6 +7,7 @@ const cors = require('cors');
 const app = express();
 
 const corsOptions = {
+  // origin: 'https://code-review-tecnouri.netlify.app', //PRODUÇÃO
   origin: 'http://localhost:3001',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
