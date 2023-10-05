@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const handleLogin = async (email, senha) => {
     try {
-        const response = await axios.get(`http://localhost:3000/UsuariosController/validarUsuario?usu_email=${email}&usu_senha=${senha}`);
+        const response = await axios.get(`https://servidor-codereview-tecnouri-f3a93148befe.herokuapp.com/UsuariosController/validarUsuario?usu_email=${email}&usu_senha=${senha}`);
 
         if (response.data) {
             return { loggedIn: true };
