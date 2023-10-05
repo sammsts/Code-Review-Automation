@@ -1,9 +1,13 @@
-function App() {
+import React from 'react';
+import RoutesApp from './routes';
+import { AuthProvider } from './Autentication/AuthContext.js';
+
+const App = () => {
   return (
-    <div className="App">
-      <h1>Teste</h1>
-    </div>
+    <AuthProvider>
+      <RoutesApp />
+    </AuthProvider>
   );
-}
+};
 
 export default App;

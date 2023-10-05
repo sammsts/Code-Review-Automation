@@ -1,0 +1,129 @@
+@import 'primereact/resources/primereact.min.css';
+@import 'primereact/resources/themes/saga-blue/theme.css';
+@import 'primeicons/primeicons.css';
+
+/* tela */
+.container{
+    min-height: 100vh;
+    flex-direction: column;
+    background: linear-gradient(#121212, #212b46);
+}
+
+.ctnTitle{
+    align-items:end;
+    display: flex;
+    cursor: pointer;
+}
+
+.title{
+    margin: 0px 20px;
+    font-size: 45px;
+    color: #FFF;
+    animation: flipTitle 2s;
+    transition: transform 2s;
+    transform-origin: center;
+}
+
+.title:hover{
+    transform: scale(1.1);
+}
+
+.modal-1{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.linhas{
+    display: flex;
+    justify-content: center;
+    gap: 25%;
+    margin-top: 2%;
+    margin-right: 40%;
+}
+
+.rodape{
+    display: flex;
+    justify-content: space-between;
+    gap: 69%;
+}
+
+.cabecalho{
+    width: 100%;
+    display: flex;
+}
+
+.foto{
+    width: 36%;
+}
+
+.nome{
+    width: 100%;
+}
+
+.contagem{
+    color: white;
+    font-size: 20px;
+    margin-bottom: 0.2%;
+}
+
+.rodape-grid{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#selectAtendente{
+    width: 14%;
+    margin-left: 10px;
+    margin-right: 20px;
+}
+
+#imprimir{
+    font-weight: bold;
+    margin-top: 2%;
+    margin-left: 1.3%;
+    margin-bottom: 2%;
+}
+
+#pesquisar{
+    font-weight: bold;
+}
+
+#gridMain{
+    display: flex;
+    justify-content: center;
+}
+
+#grid-commits{
+    width: 97%;
+}
+
+/* Filtros */
+.ctnInputFiltros {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 34px 20px;
+    
+  }
+  
+  .datePickerContainer {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 1px 3px 8px rgba(0, 0, 0, 0.5);
+    display: flex;
+    width: 100%;
+
+  }
+
+/* events */
+@keyframes flipTitle{
+    from{
+        transform: rotateX(90deg);
+    }
+    to{
+        transform: rotateX(0deg)
+    }
+}
