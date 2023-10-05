@@ -46,14 +46,7 @@ function Commits(){
         { name: 'Samuel', code: 'sammsts' }
     ];
 
-  const handleDateInitialChange = (event) => {
-    setSelectedDateInitial(event.target.value);
-  };
-  const handleDateFinalChange = (event) => {
-    setSelectedDateFinal(event.target.value);
-  };
   const handleButtonClick = (rowData) => {
-    debugger
     setCodigo(rowData.codigo);
     setRepositorio(rowData.repositorio)
     openModal(); 
@@ -105,7 +98,6 @@ function Commits(){
 
   const buscarCommits = async (nome, repositorio, datainicial, datafinal) => {
     showLoading('commits');
-    debugger
     const token = process.env.REACT_APP_API_KEY;
     let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'sammsts', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7'];
     let repositoriosDesejados = ['GespamWeb', 'Portal_Transparencia', 'relatorios-gespam']
@@ -152,21 +144,8 @@ function Commits(){
             );
             pageGespam++;
           } catch (error) {
-<<<<<<< HEAD
-<<<<<<< HEAD
             console.error('Erro ao buscar os commits no ' + repositorio.name + ': ', error);
-<<<<<<< HEAD
-              break;
-=======
-            console.error('Erro ao buscar os commits no ' + repos[i].name + ': ', error);
-=======
-            console.error('Erro ao buscar os commits no ' + repositorio.name + ': ', error);
->>>>>>> 18ad9ca (mesclando branch dev com test-monolítico.)
             break;
->>>>>>> d40ea23 (Iniciando sequelize)
-=======
-            break;
->>>>>>> 18ad9ca54ae1860821283795d0853e29e05ead94
           }
         }
       };

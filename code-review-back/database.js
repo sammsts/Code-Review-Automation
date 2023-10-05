@@ -1,9 +1,9 @@
 const Sequelize = require('sequelize');
 
 // Informações do banco de dados PostgreSQL
-const sequelize = new Sequelize('postgres', 'postgres', 'Sdr2F51nHs1PcnM6%r5^', {
+const sequelize = new Sequelize('coqwwcvy', 'coqwwcvy', 'RHcGrhCt37EH95fKMrTHDzcbzmRUMjxr', {
   dialect: 'postgres', // Tipo de banco de dados (no caso, PostgreSQL)
-  host: 'localhost', // Host do banco de dados
+  host: 'motty.db.elephantsql.com', // Host do banco de dados
   port: 5432, // Porta do PostgreSQL
 });
 

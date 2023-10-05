@@ -17,38 +17,22 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "framer-motion": "^10.16.2",
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     "html2pdf.js": "^0.10.1",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.6.0",
-=======
     "fs": "^0.0.1-security",
     "graceful-fs": "^4.2.11",
     "https": "^1.0.0",
     "path": "^0.12.7",
     "pg-hstore": "^2.3.4",
->>>>>>> a0b5d04 (Mesclando da branch dev para test-monolítico)
-=======
     "graceful-fs": "^4.2.11",
     "path": "^0.12.7",
->>>>>>> a7c8b1a (Ajustes, retomando projeto NÃO monolítico.)
-=======
->>>>>>> 7d029e87edf6d58d94d8c87674cc6fc65c3a919a
     "graceful-fs": "^4.2.11",
     "https": "^1.0.0",
     "path": "^0.12.7",
     "html2pdf.js": "^0.10.1",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.6.0",
-<<<<<<< HEAD
-=======
->>>>>>> 0661937c1815e07516b030d6c54e0524ea89c6f4
->>>>>>> 18ad9ca54ae1860821283795d0853e29e05ead94
->>>>>>> 7d029e87edf6d58d94d8c87674cc6fc65c3a919a
     "primeicons": "^6.0.1",
     "primereact": "^9.6.2",
     "react": "^18.2.0",
