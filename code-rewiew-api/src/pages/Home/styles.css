@@ -15,6 +15,14 @@
     cursor: pointer;
 }
 
+.total{
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 8px;
+    margin-left: 20%;
+}
+
 .title{
     margin: 0px 20px;
     font-size: 45px;

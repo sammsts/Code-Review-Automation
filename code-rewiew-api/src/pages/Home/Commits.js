@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './styles.css';
 import axios from 'axios';
 import CommitsDetalhes from './CommitsDetalhes';
+import PdfGenerator from '../../PdfGenarator/PdfGenerator';
+import { BlobProvider, pdf } from '@react-pdf/renderer';
 
 // prime react ---------------------------------
 import { Calendar } from 'primereact/calendar';
@@ -28,6 +30,7 @@ function Commits(){
   const [commits, setCommits] = useState([]);
   const [commitsSelecionado, setCommitSelecionado] = useState('');
   const [atendente, setAtendente] = useState('');
+  const [totalizador, setTotalizador] = useState(0);
   const repositorios = [
     { name: 'Todos', code: '' },
     { name: 'GespamWeb', code: 'GespamWeb' },
@@ -76,6 +79,18 @@ function Commits(){
       case 'michelmachado7': return 'Michel'; break;
     }
   }
+
+  const generatePDF = async () => {
+    const element = <PdfGenerator />;
+    const pdfBlob = await pdf(element).toBlob();
+  
+    const url = window.URL.createObjectURL(pdfBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'meu-pdf.pdf';
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
 
   // const repos = [
   //   { name: 'GespamWeb', code: 'GespamWeb' },
@@ -150,6 +165,7 @@ function Commits(){
         }
       };
     }
+    setTotalizador(commits.length)
     setCommits(commits);
     hideLoading('commits');
   }
@@ -220,6 +236,7 @@ function Commits(){
             }}
             icon='pi pi-search'
           />
+          <h3 className='total'>Total de Registros na Grid: {totalizador}</h3>
         </div>
       </div>
       <grid id="gridMain">
@@ -244,6 +261,7 @@ function Commits(){
         label="Imprimir"
         id="imprimir"
         icon="pi pi-print"
+        onClick={generatePDF}
       />
     </div>
   )
