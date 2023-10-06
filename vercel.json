@@ -1,0 +1,11 @@
+{
+    "version": 2,
+    "builds": [
+      { "src": "server.js", "use": "@now/node" }
+    ],
+    "routes": [
+      { "src": "/https://code-review-tecnouri.netlify.app//(.*)", "dest": "server.js" },
+      { "src": "/(.*)", "dest": "server.js" }
+    ]
+  }
+  
