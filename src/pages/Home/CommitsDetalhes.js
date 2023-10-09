@@ -57,7 +57,6 @@ function CommitsDetalhes({isOpen, onClose, commitCode, repositorio}) {
         if (response.status === 200) {
           let arquivosJSON = []
           const commitInfo = response.data;
-          console.log("Informações do Commit:", commitInfo);
           setUrlAvatar(commitInfo.author.avatar_url)
           setNome(commitInfo.author.login)
           setLinAdicionadas(commitInfo.stats.additions)
@@ -85,7 +84,6 @@ function CommitsDetalhes({isOpen, onClose, commitCode, repositorio}) {
   }, [commitCode, repositorio]); 
 
   function botaoCodigo(data){
-    console.log(commit.files[data].patch)
     setCodigoArquivo(commit.files[data].patch)
     setId(data+1)
     openModal()
