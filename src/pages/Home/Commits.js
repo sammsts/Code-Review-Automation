@@ -77,6 +77,9 @@ function Commits(){
       case 'AdrianoJMReidel': return 'Adriano'; break;
       case 'brissowkevin': return 'Kevin'; break;
       case 'michelmachado7': return 'Michel'; break;
+      case 'Paulo-Fritsch': return 'Paulo'; break;
+      case 'Cesario-Stoquero': return 'Cesario'; break;
+      case 'thiagoAbase': return 'Thiago'; break;
       default: return nome;
     }
   }
@@ -97,7 +100,7 @@ function Commits(){
   const buscarCommits = async (nome, repositorio, datainicial, datafinal) => {
     showLoading('commits');
     const token = process.env.REACT_APP_API_KEY;
-    let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'sammsts', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7'];
+    let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'sammsts', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7', 'Paulo-Fritsch', 'Cesario-Stoquero', 'thiagoAbase'];
     let repositoriosDesejados = ['GespamWeb', 'Portal_Transparencia', 'relatorios-gespam']
 
     if (nome.code !== '' && nome.code !== undefined) {
