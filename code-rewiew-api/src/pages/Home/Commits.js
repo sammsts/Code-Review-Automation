@@ -74,6 +74,7 @@ function Commits(){
       case 'AdrianoJMReidel': return 'Adriano'; break;
       case 'brissowkevin': return 'Kevin'; break;
       case 'michelmachado7': return 'Michel'; break;
+      default: return nome;
     }
   }
 
