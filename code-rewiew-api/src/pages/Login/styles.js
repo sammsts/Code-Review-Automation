@@ -4,6 +4,8 @@ export const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  background: linear-gradient(to bottom, #000, #001f3f, #003366);
+  color: black;
   flex-direction: column;
   gap: 10px;
   height: 100vh;
@@ -26,7 +28,7 @@ export const Content = styled.div`
 export const Label = styled.label`
   font-size: 15px;
   font-weight: 600;
-  color: #676767;
+  color: white;
 `;
 
 export const LabelSignup = styled.label`
@@ -45,4 +47,8 @@ export const Strong = styled.strong`
     text-decoration: none;
     color: #676767;
   }
+`;
+
+export const span = styled.span`
+  cursor: pointer;
 `;

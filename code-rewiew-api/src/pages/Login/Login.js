@@ -11,6 +11,7 @@ const Login = () => {
     const [senha, setSenha] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleLoginClick = async () => {
         if (!email && !senha) {
@@ -36,16 +37,33 @@ const Login = () => {
             <C.Content>
                 <Input
                     type="email"
-                    placeholder="Digite seu E-mail"
+                    placeholder="Digite seu Usuário"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
-                <Input
-                    type="senha"
-                    placeholder="Digite sua Senha"
-                    value={senha}
-                    onChange={(e) => setSenha(e.target.value)}
-                />
+                <div style={{ position: 'relative' }}>
+                    <Input
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Digite sua Senha"
+                        value={senha}
+                        onChange={(e) => setSenha(e.target.value)}
+                    />
+                    {senha && (
+                        <span
+                            id="show-password-toggle"
+                            onClick={() => setShowPassword(!showPassword)}
+                            style={{
+                                position: 'absolute',
+                                top: '50%',
+                                right: '10px',
+                                transform: 'translateY(-50%)',
+                                cursor: 'pointer',
+                            }}
+                            >
+                            {showPassword ? '👁️' : '👁️‍🗨️'}
+                        </span>
+                    )}
+                </div>
                 <C.labelError>{error}</C.labelError>
                 <Button Text="Entrar" onClick={handleLoginClick} />
             </C.Content>
