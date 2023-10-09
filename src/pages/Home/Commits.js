@@ -43,7 +43,10 @@ function Commits(){
         { name: 'Marcus', code: 'MarcusVSN2022' },
         { name: 'Michel', code: 'michelmachado7' },
         { name: 'Kevin', code: 'brissowkevin' },
-        { name: 'Samuel', code: 'sammsts' }
+        { name: 'Samuel', code: 'sammsts' },
+        { name: 'Paulo', code: 'Paulo-Fritsch' },
+        { name: 'Cesario', code: 'Cesario-Stoquero' },
+        { name: 'Thiago', code: 'thiagoAbase' }
     ];
 
   const handleButtonClick = (rowData) => {
