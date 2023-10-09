@@ -77,12 +77,6 @@ function Commits(){
     }
   }
 
-  // const repos = [
-  //   { name: 'GespamWeb', code: 'GespamWeb' },
-  //   { name: 'Portal da Transparência', code: 'Portal_Transparencia' },
-  //   { name: 'Api (relatórios)', code: 'relatorios-gespam' },
-  // ];
-
   const setInitialDates = () => {
     const dataAtual = new Date();
 
