@@ -10,9 +10,15 @@
 }
 
 .ctnTitle{
+    margin-left: 30px;
     align-items:end;
     display: flex;
+}
+
+.logoTecnoURI{
+    margin-top: 5px;
     cursor: pointer;
+    transition: transform 0.5s ease-in-out;
 }
 
 .total{
@@ -20,20 +26,13 @@
     font-weight: bold;
     font-size: 18px;
     margin-top: 8px;
-    margin-left: 20%;
+    margin-left: 1.5%;
 }
 
 .title{
     margin: 0px 20px;
-    font-size: 45px;
+    font-size: 35px;
     color: #FFF;
-    animation: flipTitle 2s;
-    transition: transform 2s;
-    transform-origin: center;
-}
-
-.title:hover{
-    transform: scale(1.1);
 }
 
 .modal-1{
@@ -126,12 +125,11 @@
 
   }
 
-/* events */
-@keyframes flipTitle{
-    from{
-        transform: rotateX(90deg);
-    }
-    to{
-        transform: rotateX(0deg)
-    }
-}
+  /*Animação*/
+.rotateAnimation {
+    transition: transform 0.5s ease-in-out;
+  }
+  
+  .logoTecnoURI:hover {
+    transform: rotate(360deg);
+  }
