@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { Code } from '@chakra-ui/react'
 
-function CommitsCodigo({isOpen, onClose, codigo}) {
+function CommitsCodigo({onClose, codigo}) {
 
   return (
     <Modal isOpen={true} onClose={onClose} size={'2xl'} className="modal">

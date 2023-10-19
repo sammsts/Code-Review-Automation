@@ -10,7 +10,9 @@ import {
   ModalFooter,
   Button,
 } from "@chakra-ui/react";
-import { Avatar, AvatarBadge, AvatarGroup } from '@chakra-ui/react'
+import 'primereact/resources/themes/saga-blue/theme.css';
+import 'primereact/resources/primereact.min.css';
+import { Avatar } from '@chakra-ui/react'
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
 import { Text } from "@chakra-ui/react";
 import { hideLoading, showLoading } from "../../Componentes/loading";
@@ -20,8 +22,7 @@ import Grid from "../../Componentes/grid";
 import { Column } from "primereact/column";
 import CommitsCodigo from "./CommitsCodigo";
 
-
-function CommitsDetalhes({isOpen, onClose, commitCode, repositorio}) {
+function CommitsDetalhes({onClose, commitCode, repositorio}) {
 
   const [commit, setCommit] = useState([]);
   const [urlAvatar, setUrlAvatar] = useState('')
@@ -57,6 +58,7 @@ function CommitsDetalhes({isOpen, onClose, commitCode, repositorio}) {
         if (response.status === 200) {
           let arquivosJSON = []
           const commitInfo = response.data;
+          console.log("Informações do Commit:", commitInfo);
           setUrlAvatar(commitInfo.author.avatar_url)
           setNome(commitInfo.author.login)
           setLinAdicionadas(commitInfo.stats.additions)
@@ -84,6 +86,7 @@ function CommitsDetalhes({isOpen, onClose, commitCode, repositorio}) {
   }, [commitCode, repositorio]); 
 
   function botaoCodigo(data){
+    console.log(commit.files[data].patch)
     setCodigoArquivo(commit.files[data].patch)
     setId(data+1)
     openModal()
@@ -121,7 +124,7 @@ function CommitsDetalhes({isOpen, onClose, commitCode, repositorio}) {
               <TabPanel>
                 <Grid id="grid-arquivos" value={arquivos}>
                   <Column className='coluna' body={(rowData) => (
-                    <Button label="" icon="pi pi-info-circle" onClick={() => botaoCodigo(id)} />
+                    <Button label="" icon="pi-code" onClick={() => botaoCodigo(id)} />
                   )} style={{ width: '3%', textAlign: 'center' }} />
                   <Column className='coluna' field="arquivo" header="Arquivo" sortable style={{ width: '100%' }} ></Column>
                 </Grid> 

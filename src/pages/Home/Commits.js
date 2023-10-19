@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './styles.css';
 import axios from 'axios';
 import CommitsDetalhes from './CommitsDetalhes';
+import PdfGenerator from '../../PdfGenerator/PdfGenerator';
+import { pdf } from '@react-pdf/renderer';
 
 // prime react ---------------------------------
 import { Calendar } from 'primereact/calendar';
@@ -12,8 +14,7 @@ import { Button } from 'primereact/button';
 import Grid from '../../Componentes/grid';
 import { Column } from 'primereact/column';
 import { hideLoading, showLoading } from '../../Componentes/loading';
-//Chakra ---------------------------------------
-
+import logo_tecnouri from '../../PdfGenerator/public/logo_tecnouri.png';
 
 function Commits(){
 
@@ -28,6 +29,7 @@ function Commits(){
   const [commits, setCommits] = useState([]);
   const [commitsSelecionado, setCommitSelecionado] = useState('');
   const [atendente, setAtendente] = useState('');
+  const [totalizador, setTotalizador] = useState(0);
   const repositorios = [
     { name: 'Todos', code: '' },
     { name: 'GespamWeb', code: 'GespamWeb' },
@@ -43,10 +45,7 @@ function Commits(){
         { name: 'Marcus', code: 'MarcusVSN2022' },
         { name: 'Michel', code: 'michelmachado7' },
         { name: 'Kevin', code: 'brissowkevin' },
-        { name: 'Samuel', code: 'sammsts' },
-        { name: 'Paulo', code: 'Paulo-Fritsch' },
-        { name: 'Cesario', code: 'Cesario-Stoquero' },
-        { name: 'Thiago', code: 'thiagoAbase' }
+        { name: 'Samuel', code: 'sammsts' }
     ];
 
   const handleButtonClick = (rowData) => {
@@ -55,6 +54,11 @@ function Commits(){
     openModal(); 
   };
   
+  //Recarregar a página
+  const handleLogoClick = () => {
+    window.location.reload();
+  };
+
   function converterData(dataString) {
     const data = new Date(dataString);
   
@@ -77,12 +81,23 @@ function Commits(){
       case 'AdrianoJMReidel': return 'Adriano'; break;
       case 'brissowkevin': return 'Kevin'; break;
       case 'michelmachado7': return 'Michel'; break;
-      case 'Paulo-Fritsch': return 'Paulo'; break;
-      case 'Cesario-Stoquero': return 'Cesario'; break;
-      case 'thiagoAbase': return 'Thiago'; break;
-      default: return nome;
     }
   }
+
+  const generatePDF = async () => {
+    const element = <PdfGenerator commits={commits} />;
+    const pdfBlob = await pdf(element).toBlob();
+  
+    const url = window.URL.createObjectURL(pdfBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    const today = new Date()
+    const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+    const formattedTime = `${today.getHours().toString().padStart(2, '0')}-${today.getMinutes().toString().padStart(2, '0')}-${today.getSeconds().toString().padStart(2, '0')}`;
+    a.download = `commits-${formattedDate}-${formattedTime}.pdf`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
 
   const setInitialDates = () => {
     const dataAtual = new Date();
@@ -100,7 +115,7 @@ function Commits(){
   const buscarCommits = async (nome, repositorio, datainicial, datafinal) => {
     showLoading('commits');
     const token = process.env.REACT_APP_API_KEY;
-    let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'sammsts', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7', 'Paulo-Fritsch', 'Cesario-Stoquero', 'thiagoAbase'];
+    let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'sammsts', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7'];
     let repositoriosDesejados = ['GespamWeb', 'Portal_Transparencia', 'relatorios-gespam']
 
     if (nome.code !== '' && nome.code !== undefined) {
@@ -141,6 +156,8 @@ function Commits(){
                 mensagem: commit.commit.message,
                 repositorio: repositoriosDesejados[i],
                 data: converterData(commit.commit.author.date),
+                url: commit.html_url,
+                totalizador: commits.length
               }))
             );
             pageGespam++;
@@ -151,6 +168,7 @@ function Commits(){
         }
       };
     }
+    setTotalizador(commits.length)
     setCommits(commits);
     hideLoading('commits');
   }
@@ -175,7 +193,8 @@ function Commits(){
   return (
     <div className="container" id="commits">
       <div className="ctnTitle">
-        <h1 className="title">Commits tecnoURI</h1>
+        <img src={logo_tecnouri} alt="Logo tecnoURI" className="logoTecnoURI" onClick={handleLogoClick}/>
+        <h1 className="title">Commits TecnoURI</h1>
       </div>
       <div className="ctnInputFiltros">
         <div className="datePickerContainer">
@@ -235,6 +254,7 @@ function Commits(){
           <Column className='coluna' field="data" header="Data" sortable style={{ width: '10%', textAlign: 'center' }} ></Column>
         </Grid> 
       </grid>
+      <h3 className='total'>Total de Registros: {totalizador}</h3>
       {isModalOpen && <CommitsDetalhes
         isOpen={isModalOpen}
         onClose={closeModal}
@@ -245,6 +265,7 @@ function Commits(){
         label="Imprimir"
         id="imprimir"
         icon="pi pi-print"
+        onClick={generatePDF}
       />
     </div>
   )
