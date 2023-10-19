@@ -6,10 +6,11 @@ const ProtectedRoutes = () => {
   const { loggedIn } = useAuth();
 
   if (!loggedIn) {
-    //pagina de login se não for autenticado
+    document.title = "Login";
     return <Navigate to="/" />;
   }
 
+  document.title = "Home";
   return <Outlet />;
 };
 
