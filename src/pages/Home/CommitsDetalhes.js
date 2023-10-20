@@ -21,6 +21,7 @@ import { LinkIcon } from "@chakra-ui/icons";
 import Grid from "../../Componentes/grid";
 import { Column } from "primereact/column";
 import CommitsCodigo from "./CommitsCodigo";
+import { FaCode } from 'react-icons/fa';
 
 function CommitsDetalhes({onClose, commitCode, repositorio}) {
 
@@ -85,10 +86,9 @@ function CommitsDetalhes({onClose, commitCode, repositorio}) {
     fetchCommitInfo();
   }, [commitCode, repositorio]); 
 
-  function botaoCodigo(data){
-    console.log(commit.files[data].patch)
-    setCodigoArquivo(commit.files[data].patch)
-    setId(data+1)
+  function botaoCodigo(index, arquivos){
+    setCodigoArquivo(commit.files[index.rowIndex].patch)
+    setId(index.rowIndex)
     openModal()
   }
 
@@ -123,8 +123,8 @@ function CommitsDetalhes({onClose, commitCode, repositorio}) {
               </TabPanel>
               <TabPanel>
                 <Grid id="grid-arquivos" value={arquivos}>
-                  <Column className='coluna' body={(rowData) => (
-                    <Button label="" icon="pi-code" onClick={() => botaoCodigo(id)} />
+                  <Column className='coluna' body={(rowData, rowIndex) => (
+                    <Button label="" onClick={() => botaoCodigo(rowIndex, arquivos)} style={{ display: 'flex', alignItems: 'center' }}><FaCode /></Button>
                   )} style={{ width: '3%', textAlign: 'center' }} />
                   <Column className='coluna' field="arquivo" header="Arquivo" sortable style={{ width: '100%' }} ></Column>
                 </Grid> 
@@ -132,6 +132,7 @@ function CommitsDetalhes({onClose, commitCode, repositorio}) {
                   isOpen={isModalOpen}
                   onClose={closeModal}
                   codigo={codigoArquivo}
+                  fileName={arquivos[id].arquivo}
                 />}
               </TabPanel>
             </TabPanels>
