@@ -6,7 +6,6 @@
 .container{
     min-height: 100vh;
     flex-direction: column;
-    background: linear-gradient(#121212, #212b46);
 }
 
 .ctnTitle{
@@ -15,24 +14,34 @@
     display: flex;
 }
 
+#darkModeButton{
+    position: fixed;
+    right: 1.5%;
+    top: 5%;
+    z-index: 999;
+}
+
 .logoTecnoURI{
     margin-top: 5px;
     cursor: pointer;
-    transition: transform 0.5s ease-in-out;
+    transition: transform 0.5s;
 }
 
 .total{
-    color: white;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 12px;
     margin-top: 8px;
     margin-left: 1.5%;
 }
 
 .title{
-    margin: 0px 20px;
+    margin: -10px 20px;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: 35px;
-    color: #FFF;
+}
+
+.dark-title {
+    color: #000;
 }
 
 .modal-1{
@@ -124,12 +133,32 @@
     width: 100%;
 
   }
+  
+  .dark-mode .container {
+    background: linear-gradient(#121212, #212b46);
+    color: white;
+  }
 
   /*Animação*/
 .rotateAnimation {
     transition: transform 0.5s ease-in-out;
   }
   
-  .logoTecnoURI:hover {
-    transform: rotate(360deg);
+.logoTecnoURI:hover {
+    animation: shake 0.5s infinite;
+  }
+
+  /*Keyframes*/
+@keyframes shake {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-5px); }
+    80% { transform: translateX(5px); }
+    100% { transform: translateX(0); }
+  }
+
+  @keyframes rainbow {
+    0% { background-position: 0 10%; }
+    100% { background-position: 80% 0; }
   }

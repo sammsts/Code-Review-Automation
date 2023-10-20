@@ -30,6 +30,11 @@ function Commits(){
   const [commitsSelecionado, setCommitSelecionado] = useState('');
   const [atendente, setAtendente] = useState('');
   const [totalizador, setTotalizador] = useState(0);
+  const [titleColor, setTitleColor] = useState('');
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const lightColor = "#000"; //Cor para o modo claro
+  const darkColor = "#FFF";  //Cor para o modo escuro
+
   const repositorios = [
     { name: 'Todos', code: '' },
     { name: 'GespamWeb', code: 'GespamWeb' },
@@ -47,6 +52,13 @@ function Commits(){
         { name: 'Kevin', code: 'brissowkevin' },
         { name: 'Samuel', code: 'sammsts' }
     ];
+
+  //ANIMAÇÃO DO TÍTULO============================================================
+  const handleTitleMouseLeave = () => {
+    const color = isDarkMode ? lightColor : darkColor;
+    setTitleColor(color); //Define a cor de volta para o padrão
+  };
+  //===============================================================================
 
   const handleButtonClick = (rowData) => {
     setCodigo(rowData.codigo);
@@ -189,12 +201,19 @@ function Commits(){
     buscarCommits({ name: 'Todos', code: '' }, repositorioVazio, dataInicial, dataFinal);
   }, []);
   
+  function darkMode (){
+    const body = document.body;
+    body.classList.toggle('dark-mode');
+    setIsDarkMode(!isDarkMode);
+    handleTitleMouseLeave();
+  }
 
   return (
     <div className="container" id="commits">
       <div className="ctnTitle">
         <img src={logo_tecnouri} alt="Logo tecnoURI" className="logoTecnoURI" onClick={handleLogoClick}/>
-        <h1 className="title">Commits TecnoURI</h1>
+        <h1 className={"title"} style={{ color: titleColor }}>Commits</h1>
+        <Button id="darkModeButton" label="" icon="pi pi-moon" onClick={darkMode} />
       </div>
       <div className="ctnInputFiltros">
         <div className="datePickerContainer">
@@ -254,7 +273,7 @@ function Commits(){
           <Column className='coluna' field="data" header="Data" sortable style={{ width: '10%', textAlign: 'center' }} ></Column>
         </Grid> 
       </grid>
-      <h3 className='total'>Total de Registros: {totalizador}</h3>
+      <h3 className={"total"} style={{ color: titleColor }}>Total de Registros: {totalizador}</h3>
       {isModalOpen && <CommitsDetalhes
         isOpen={isModalOpen}
         onClose={closeModal}
