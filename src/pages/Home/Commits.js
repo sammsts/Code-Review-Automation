@@ -4,8 +4,6 @@ import axios from 'axios';
 import CommitsDetalhes from './CommitsDetalhes';
 import PdfGenerator from '../../PdfGenerator/PdfGenerator';
 import { pdf } from '@react-pdf/renderer';
-
-// prime react ---------------------------------
 import { Calendar } from 'primereact/calendar';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
@@ -14,7 +12,7 @@ import { Button } from 'primereact/button';
 import Grid from '../../Componentes/grid';
 import { Column } from 'primereact/column';
 import { hideLoading, showLoading } from '../../Componentes/loading';
-import logo_tecnouri from '../../PdfGenerator/public/logo_tecnouri.png';
+import logo_tecnouri from '../../PdfGenerator/public/logo_tecnouri-light.png';
 
 function Commits(){
 
@@ -32,7 +30,8 @@ function Commits(){
   const [totalizador, setTotalizador] = useState(0);
   const [titleColor, setTitleColor] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const lightColor = "#000"; //Cor para o modo claro
+  const [loading, setLoading] = useState(false);
+  const lightColor = "#003"; //Cor para o modo claro
   const darkColor = "#FFF";  //Cor para o modo escuro
 
   const repositorios = [
@@ -50,13 +49,16 @@ function Commits(){
         { name: 'Marcus', code: 'MarcusVSN2022' },
         { name: 'Michel', code: 'michelmachado7' },
         { name: 'Kevin', code: 'brissowkevin' },
-        { name: 'Samuel', code: 'sammsts' }
+        { name: 'Samuel', code: 'sammsts' },
+        { name: 'Cesario', code: 'Cesario-Stoquero' },
+        { name: 'Thiago', code: 'thiagoAbase' },
+        { name: 'Paulo', code: 'Paulo-Fritsch' },
     ];
 
   //ANIMAÇÃO DO TÍTULO============================================================
   const handleTitleMouseLeave = () => {
     const color = isDarkMode ? lightColor : darkColor;
-    setTitleColor(color); //Define a cor de volta para o padrão
+    setTitleColor(color);
   };
   //===============================================================================
 
@@ -66,6 +68,27 @@ function Commits(){
     openModal(); 
   };
   
+  const clickImprimir = async () => {
+    setLoading(true);
+
+    setTimeout(() => {
+        setLoading(false);
+    }, 2000);
+
+    const element = <PdfGenerator commits={commits} />;
+    const pdfBlob = await pdf(element).toBlob();
+  
+    const url = window.URL.createObjectURL(pdfBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    const today = new Date()
+    const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+    const formattedTime = `${today.getHours().toString().padStart(2, '0')}-${today.getMinutes().toString().padStart(2, '0')}-${today.getSeconds().toString().padStart(2, '0')}`;
+    a.download = `commits-${formattedDate}-${formattedTime}.pdf`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   //Recarregar a página
   const handleLogoClick = () => {
     window.location.reload();
@@ -93,6 +116,9 @@ function Commits(){
       case 'AdrianoJMReidel': return 'Adriano'; break;
       case 'brissowkevin': return 'Kevin'; break;
       case 'michelmachado7': return 'Michel'; break;
+      case 'Cesario-Stoquero': return 'Cesario'; break;
+      case 'thiago.gomes': return 'Thiago'; break;
+      case 'Paulo Cezar Fritsch Junior': return 'Paulo'; break;
     }
   }
 
@@ -127,7 +153,7 @@ function Commits(){
   const buscarCommits = async (nome, repositorio, datainicial, datafinal) => {
     showLoading('commits');
     const token = process.env.REACT_APP_API_KEY;
-    let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'sammsts', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7'];
+    let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'sammsts', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7', 'thiagoAbase', 'Cesario-Stoquero', 'Paulo-Fritsch'];
     let repositoriosDesejados = ['GespamWeb', 'Portal_Transparencia', 'relatorios-gespam']
 
     if (nome.code !== '' && nome.code !== undefined) {
@@ -213,7 +239,7 @@ function Commits(){
       <div className="ctnTitle">
         <img src={logo_tecnouri} alt="Logo tecnoURI" className="logoTecnoURI" onClick={handleLogoClick}/>
         <h1 className={"title"} style={{ color: titleColor }}>Commits</h1>
-        <Button id="darkModeButton" label="" icon="pi pi-moon" onClick={darkMode} />
+        <Button id="darkModeButton" label="" icon={isDarkMode ? 'pi pi-sun' : 'pi pi-moon'} onClick={darkMode} />
       </div>
       <div className="ctnInputFiltros">
         <div className="datePickerContainer">
@@ -238,7 +264,7 @@ function Commits(){
             options={repositorios} 
             optionLabel="name" 
             placeholder="Todos"
-            style={{ marginLeft: '10px' }}
+            style={{ marginLeft: '10px', width: '230px' }}
             id="selectRepositorios"
           />
           <Dropdown
@@ -247,6 +273,7 @@ function Commits(){
             options={atendentes} 
             optionLabel="name" 
             placeholder="Todos"
+            style={{ width: '120px' }}
             id="selectAtendente"
           />
           <Button
@@ -264,7 +291,7 @@ function Commits(){
       <grid id="gridMain">
         <Grid id="grid-commits" selection={commitsSelecionado} onSelectionChange={(e) => setCommitSelecionado(e.value)} value={commits}>
           <Column className='coluna' body={(rowData) => (
-              <Button label="" icon="pi pi-info-circle" onClick={() => handleButtonClick(rowData)} />
+              <Button label="" icon="pi pi-info-circle" outlined onClick={() => handleButtonClick(rowData)} />
             )} style={{ width: '3%', textAlign: 'center' }} />
           <Column className='coluna' field="codigo" header="Código" sortable style={{ width: '28%', textAlign: 'center' }}></Column>
           <Column className='coluna' field="autor" header="Autor" sortable style={{ width: '8%', textAlign: 'center' }} ></Column>
@@ -284,7 +311,8 @@ function Commits(){
         label="Imprimir"
         id="imprimir"
         icon="pi pi-print"
-        onClick={generatePDF}
+        loading={loading}
+        onClick={clickImprimir}
       />
     </div>
   )

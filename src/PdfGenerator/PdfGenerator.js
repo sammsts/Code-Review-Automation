@@ -1,6 +1,6 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Image, Link } from '@react-pdf/renderer';
-import logo from './public/logo_tecnouri.png';
+import logo from './public/logo_tecnouri-light.png';
 import logo_github from './public/github.png';
 
 //RELATÓRIO SIMPLES

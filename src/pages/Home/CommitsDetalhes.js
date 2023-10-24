@@ -59,7 +59,6 @@ function CommitsDetalhes({onClose, commitCode, repositorio}) {
         if (response.status === 200) {
           let arquivosJSON = []
           const commitInfo = response.data;
-          console.log("Informações do Commit:", commitInfo);
           setUrlAvatar(commitInfo.author.avatar_url)
           setNome(commitInfo.author.login)
           setLinAdicionadas(commitInfo.stats.additions)
@@ -124,7 +123,7 @@ function CommitsDetalhes({onClose, commitCode, repositorio}) {
               <TabPanel>
                 <Grid id="grid-arquivos" value={arquivos}>
                   <Column className='coluna' body={(rowData, rowIndex) => (
-                    <Button label="" onClick={() => botaoCodigo(rowIndex, arquivos)} style={{ display: 'flex', alignItems: 'center' }}><FaCode /></Button>
+                    <Button onClick={() => botaoCodigo(rowIndex, arquivos)} style={{ display: 'flex', alignItems: 'center' }}><FaCode /></Button>
                   )} style={{ width: '3%', textAlign: 'center' }} />
                   <Column className='coluna' field="arquivo" header="Arquivo" sortable style={{ width: '100%' }} ></Column>
                 </Grid> 
