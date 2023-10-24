@@ -4,6 +4,7 @@ import Button from '../../Componentes/Button';
 import * as C from './styles';
 import { useAuth } from '../../Autentication/AuthContext.js';
 import { useNavigate } from 'react-router-dom';
+import logo_tecnouri from './public/logo_tecnouri.png'
 
 const Login = () => {
     const { login } = useAuth();
@@ -11,7 +12,6 @@ const Login = () => {
     const [senha, setSenha] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
-    const [showPassword, setShowPassword] = useState(false);
 
     const handleLoginClick = async () => {
         if (!email && !senha) {
@@ -33,6 +33,9 @@ const Login = () => {
 
     return (
         <C.Container>
+            <div>
+                <img src={logo_tecnouri} alt="Logo tecnoURI" className="logoTecnoURI"/>
+            </div>
             <C.Label>AUTENTICAÇÃO DE USUÁRIO</C.Label>
             <C.Content>
                 <Input
@@ -41,29 +44,12 @@ const Login = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
-                <div style={{ position: 'relative' }}>
-                    <Input
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder="Digite sua Senha"
-                        value={senha}
-                        onChange={(e) => setSenha(e.target.value)}
-                    />
-                    {senha && (
-                        <span
-                            id="show-password-toggle"
-                            onClick={() => setShowPassword(!showPassword)}
-                            style={{
-                                position: 'absolute',
-                                top: '50%',
-                                right: '10px',
-                                transform: 'translateY(-50%)',
-                                cursor: 'pointer',
-                            }}
-                            >
-                            {showPassword ? '👁️' : '👁️‍🗨️'}
-                        </span>
-                    )}
-                </div>
+                <Input
+                    type={'password'}
+                    placeholder="Digite sua Senha"
+                    value={senha}
+                    onChange={(e) => setSenha(e.target.value)}
+                />
                 <C.labelError>{error}</C.labelError>
                 <Button Text="Entrar" onClick={handleLoginClick} />
             </C.Content>

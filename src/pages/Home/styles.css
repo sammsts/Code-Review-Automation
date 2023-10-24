@@ -14,13 +14,6 @@
     display: flex;
 }
 
-#darkModeButton{
-    position: fixed;
-    right: 1.5%;
-    top: 5%;
-    z-index: 999;
-}
-
 .logoTecnoURI{
     cursor: pointer;
     transition: transform 0.5s;
@@ -36,7 +29,6 @@
 }
 
 .title{
-    margin: 20px;
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: 35px;
 }
@@ -58,6 +50,14 @@
     margin-top: 2%;
     margin-right: 40%;
 }
+
+/* .light-background {
+    background: #fff;
+  }
+  
+.dark-background {
+background: linear-gradient(to right, #121212, #212b46);
+}   */
 
 .rodape{
     display: flex;
@@ -148,6 +148,10 @@
 .logoTecnoURI:hover {
     animation: shake 0.5s infinite;
   }
+
+.card {
+    padding: 1rem;
+}
 
   /*Keyframes*/
 @keyframes shake {

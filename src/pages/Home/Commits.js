@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './styles.css';
 import axios from 'axios';
+import { Toolbar } from 'primereact/toolbar';
 import CommitsDetalhes from './CommitsDetalhes';
 import PdfGenerator from '../../PdfGenerator/PdfGenerator';
 import { pdf } from '@react-pdf/renderer';
@@ -234,12 +235,33 @@ function Commits(){
     handleTitleMouseLeave();
   }
 
-  return (
-    <div className="container" id="commits">
-      <div className="ctnTitle">
+  const startContent = (
+    <React.Fragment>
         <img src={logo_tecnouri} alt="Logo tecnoURI" className="logoTecnoURI" onClick={handleLogoClick}/>
         <h1 className={"title"} style={{ color: titleColor }}>Commits</h1>
-        <Button id="darkModeButton" label="" icon={isDarkMode ? 'pi pi-sun' : 'pi pi-moon'} onClick={darkMode} />
+    </React.Fragment>
+);
+
+  const endContent = (
+    <React.Fragment>
+      <Button id="darkModeButton" label="" icon={isDarkMode ? 'pi pi-sun' : 'pi pi-moon'} onClick={darkMode} />
+    </React.Fragment>
+  );
+
+  return (
+    <div className="container" id="commits">
+      <div className={"card"}>
+        <Toolbar
+          pt={{
+            root: { 
+              style: { 
+                background: isDarkMode 
+                  ? 'linear-gradient(to right, #121212, #212b46)'
+                  : 'linear-gradient(to right, #fff, #ddd)'
+              }
+            }
+          }} 
+          start={startContent} end={endContent}></Toolbar>
       </div>
       <div className="ctnInputFiltros">
         <div className="datePickerContainer">
