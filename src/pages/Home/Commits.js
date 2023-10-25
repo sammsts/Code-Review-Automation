@@ -32,15 +32,17 @@ function Commits(){
   const [titleColor, setTitleColor] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const lightColor = "#003"; //Cor para o modo claro
   const darkColor = "#FFF";  //Cor para o modo escuro
-
+  
   const repositorios = [
     { name: 'Todos', code: '' },
     { name: 'GespamWeb', code: 'GespamWeb' },
     { name: 'Portal da Transparência', code: 'Portal_Transparencia' },
     { name: 'Api (relatórios)', code: 'relatorios-gespam' }
-];
+  ];
+
   const atendentes = [
         { name: 'Todos', code: '' },
         { name: 'Adriano', code: 'AdrianoJMReidel' },
@@ -54,14 +56,26 @@ function Commits(){
         { name: 'Cesario', code: 'Cesario-Stoquero' },
         { name: 'Thiago', code: 'thiagoAbase' },
         { name: 'Paulo', code: 'Paulo-Fritsch' },
-    ];
+  ];
 
-  //ANIMAÇÃO DO TÍTULO============================================================
+  const dataAtual = new Date();
+
+  const dataInicial = new Date(dataAtual);
+  dataInicial.setHours(0, 0, 0, 0);
+
+  const dataFinal = new Date(dataAtual);
+  dataFinal.setHours(23, 59, 59, 999);
+
+  //ANIMAÇÃO DO TÍTULO
   const handleTitleMouseLeave = () => {
     const color = isDarkMode ? lightColor : darkColor;
     setTitleColor(color);
   };
-  //===============================================================================
+
+  //Recarregar a página
+  const handleLogoClick = () => {
+    window.location.reload();
+  };
 
   const handleButtonClick = (rowData) => {
     setCodigo(rowData.codigo);
@@ -89,54 +103,22 @@ function Commits(){
     a.click();
     window.URL.revokeObjectURL(url);
   };
-
-  //Recarregar a página
-  const handleLogoClick = () => {
-    window.location.reload();
-  };
-
-  function converterData(dataString) {
-    const data = new Date(dataString);
-  
-    const dia = data.getDate();
-    const mes = data.getMonth() + 1;
-    const ano = data.getFullYear();
-
-    const dataFormatada = `${dia.toString().padStart(2, '0')}/${mes.toString().padStart(2, '0')}/${ano}`;
-  
-    return dataFormatada;
-  }
   
   const trocarNome = (nome) => {
     switch(nome){
-      case 'augustowjerke': return 'Augusto'; break;
-      case 'fabriciowiez': return 'Fabrício'; break;
-      case 'SAMu3lms': return 'Samuel'; break;
-      case 'arturcmeneghini': return 'Artur'; break;
-      case 'MarcusVSN2022': return 'Marcus'; break;
-      case 'AdrianoJMReidel': return 'Adriano'; break;
-      case 'brissowkevin': return 'Kevin'; break;
-      case 'michelmachado7': return 'Michel'; break;
-      case 'Cesario-Stoquero': return 'Cesario'; break;
-      case 'thiago.gomes': return 'Thiago'; break;
-      case 'Paulo Cezar Fritsch Junior': return 'Paulo'; break;
+      case 'augustowjerke': return 'Augusto';
+      case 'fabriciowiez': return 'Fabrício';
+      case 'SAMu3lms': return 'Samuel';
+      case 'arturcmeneghini': return 'Artur';
+      case 'MarcusVSN2022': return 'Marcus';
+      case 'AdrianoJMReidel': return 'Adriano';
+      case 'brissowkevin': return 'Kevin';
+      case 'michelmachado7': return 'Michel';
+      case 'Cesario-Stoquero': return 'Cesario';
+      case 'thiago.gomes': return 'Thiago';
+      case 'Paulo Cezar Fritsch Junior': return 'Paulo';
     }
   }
-
-  const generatePDF = async () => {
-    const element = <PdfGenerator commits={commits} />;
-    const pdfBlob = await pdf(element).toBlob();
-  
-    const url = window.URL.createObjectURL(pdfBlob);
-    const a = document.createElement('a');
-    a.href = url;
-    const today = new Date()
-    const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
-    const formattedTime = `${today.getHours().toString().padStart(2, '0')}-${today.getMinutes().toString().padStart(2, '0')}-${today.getSeconds().toString().padStart(2, '0')}`;
-    a.download = `commits-${formattedDate}-${formattedTime}.pdf`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-  };
 
   const setInitialDates = () => {
     const dataAtual = new Date();
@@ -151,27 +133,53 @@ function Commits(){
     setSelectedDateFinal(selectedDateFinal);
   };
 
+  function converterData(dataString) {
+    const data = new Date(dataString);
+  
+    const dia = data.getDate();
+    const mes = data.getMonth() + 1;
+    const ano = data.getFullYear();
+
+    const dataFormatada = `${dia.toString().padStart(2, '0')}/${mes.toString().padStart(2, '0')}/${ano}`;
+  
+    return dataFormatada;
+  }
+
+  function darkMode (){
+    const body = document.body;
+    body.classList.toggle('dark-mode');
+    setIsDarkMode(!isDarkMode);
+    handleTitleMouseLeave();
+  }
+
+  useEffect(() => {
+    setInitialDates();
+    buscarCommits({ name: 'Todos', code: '' }, { name: 'Todos', code: '' }, dataInicial, dataFinal);
+  }, []);
+
   const buscarCommits = async (nome, repositorio, datainicial, datafinal) => {
     showLoading('commits');
+
     const token = process.env.REACT_APP_API_KEY;
+    const headers = {
+      Authorization: `token ${token}`,
+    };
     let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'sammsts', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7', 'thiagoAbase', 'Cesario-Stoquero', 'Paulo-Fritsch'];
     let repositoriosDesejados = ['GespamWeb', 'Portal_Transparencia', 'relatorios-gespam']
+    let commits = [];
 
     if (nome.code !== '' && nome.code !== undefined) {
       usuariosDesejados = [nome.code];
+      
       if(nome.code == "SAMu3lms")
       {
         usuariosDesejados = ['SAMu3lms', 'sammsts']
       }
     }
-    if(repositorio.code !== ''){
+
+    if(repositorio.code !== '' && repositorio.code !== undefined){
       repositoriosDesejados = [repositorio.code]
     }
-    const headers = {
-      Authorization: `token ${token}`,
-    };
-
-    let commits = [];
 
     for(let i = 0; i<repositoriosDesejados.length; i++)
     {
@@ -210,29 +218,6 @@ function Commits(){
     setTotalizador(commits.length)
     setCommits(commits);
     hideLoading('commits');
-  }
-
-  const repositorioVazio = { name: 'Todos', code: '' };
-
-  const dataAtual = new Date();
-
-  const dataInicial = new Date(dataAtual);
-  dataInicial.setHours(0, 0, 0, 0);
-
-  const dataFinal = new Date(dataAtual);
-  dataFinal.setHours(23, 59, 59, 999);
-
-
-  useEffect(() => {
-    setInitialDates();
-    buscarCommits({ name: 'Todos', code: '' }, repositorioVazio, dataInicial, dataFinal);
-  }, []);
-  
-  function darkMode (){
-    const body = document.body;
-    body.classList.toggle('dark-mode');
-    setIsDarkMode(!isDarkMode);
-    handleTitleMouseLeave();
   }
 
   const startContent = (
