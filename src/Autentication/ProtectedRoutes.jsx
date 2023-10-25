@@ -12,7 +12,7 @@ const ProtectedRoutes = () => {
     return <Navigate to="/" />;
   }
 
-  Cookies.set('isLogged', 'true');
+  Cookies.set('isLogged', 'true', { expires: 1 / 24 });
   document.title = "Home";
   return <Outlet />;
 };
