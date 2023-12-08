@@ -6,6 +6,7 @@ import CommitsDetalhes from './CommitsDetalhes';
 import PdfGenerator from '../../PdfGenerator/PdfGenerator';
 import { pdf } from '@react-pdf/renderer';
 import { Calendar } from 'primereact/calendar';
+import { InputText } from 'primereact/inputtext';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import { Dropdown } from 'primereact/dropdown';
@@ -32,6 +33,7 @@ function Commits(){
   const [titleColor, setTitleColor] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [mensagemCommit, setMensagemCommit] = useState('');
 
   const lightColor = "#003"; //Cor para o modo claro
   const darkColor = "#FFF";  //Cor para o modo escuro
@@ -108,9 +110,9 @@ function Commits(){
     switch(nome){
       case 'augustowjerke': return 'Augusto';
       case 'fabriciowiez': return 'Fabrício';
-      case 'SAMu3lms': return 'Samuel';
+      case 'Samuel Maciel': return 'Samuel';
       case 'arturcmeneghini': return 'Artur';
-      case 'MarcusVSN2022': return 'Marcus';
+      case 'MarcusVSN2022': return 'Cesario';  //Configuração do pc do Cesario ta alterando pra marcus, temporariamente vai ficar assim
       case 'AdrianoJMReidel': return 'Adriano';
       case 'brissowkevin': return 'Kevin';
       case 'michelmachado7': return 'Michel';
@@ -157,16 +159,13 @@ function Commits(){
     buscarCommits({ name: 'Todos', code: '' }, { name: 'Todos', code: '' }, dataInicial, dataFinal);
   }, []);
 
-  const buscarCommits = async (nome, repositorio, datainicial, datafinal) => {
-    showLoading('commits');
-
+  const buscarCommits = async (nome, repositorio, datainicial, datafinal, mensagemCommitText) => {
     const token = process.env.REACT_APP_API_KEY;
     const headers = {
       Authorization: `token ${token}`,
     };
-    let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'sammsts', 'arturcmeneghini', 'MarcusVSN2022', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7', 'thiagoAbase', 'Cesario-Stoquero', 'Paulo-Fritsch'];
+    let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'sammsts', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7', 'thiagoAbase', 'Cesario-Stoquero', 'Paulo-Fritsch'];
     let repositoriosDesejados = ['GespamWeb', 'Portal_Transparencia', 'relatorios-gespam']
-    let commits = [];
 
     if (nome.code !== '' && nome.code !== undefined) {
       usuariosDesejados = [nome.code];
@@ -181,22 +180,35 @@ function Commits(){
       repositoriosDesejados = [repositorio.code]
     }
 
-    for(let i = 0; i<repositoriosDesejados.length; i++)
-    {
-      for(let j = 0; j<usuariosDesejados.length; j++)
-      {
-        let pageGespam = 1;
-        while (true) {
-          const apiUrl = `https://api.github.com/repos/Abase-Sistemas/${repositoriosDesejados[i]}/commits?since=${datainicial}&until=${datafinal}&page=${pageGespam}&author=${usuariosDesejados[j]}`;
-          try {
-            const response = await axios.get(apiUrl, { headers });
-            const pageCommits = response.data;
+    const fetchData = async (page, repo, user) => {
+      const apiUrl = `https://api.github.com/repos/Abase-Sistemas/${repo}/commits?since=${datainicial}&until=${datafinal}&page=${page}&author=${user}`;
+    
+      try {
+        const response = await axios.get(apiUrl, { headers });
+        return response.data;
+      } catch (error) {
+        console.error(`Erro ao buscar os commits no ${repo}: `, error);
+        return [];
+      }
+    };
+
+    const fetchAllCommits = async () => {
+      const commits = [];
+    
+      for (let i = 0; i < repositoriosDesejados.length; i++) {
+        for (let j = 0; j < usuariosDesejados.length; j++) {
+          let pageGespam = 1;
+    
+          while (true) {
+            const pageCommits = await fetchData(pageGespam, repositoriosDesejados[i], usuariosDesejados[j]);
+    
             if (pageCommits.length === 0) {
               break;
             }
-            commits = commits.concat(
-              pageCommits.filter((commit) =>
-                !commit.commit.message.includes('Merge branch')
+            
+            commits.push(
+              ...pageCommits.filter((commit) =>
+                !commit.commit.message.includes('Merge branch') && (mensagemCommitText ? commit.commit.message.includes(mensagemCommitText) : true)
               ).map((commit) => ({
                 codigo: commit.sha,
                 autor: trocarNome(commit.commit.author.name),
@@ -207,17 +219,24 @@ function Commits(){
                 totalizador: commits.length
               }))
             );
+    
             pageGespam++;
-          } catch (error) {
-            console.error('Erro ao buscar os commits no ' + repositorio.name + ': ', error);
-            break;
           }
         }
-      };
-    }
-    setTotalizador(commits.length)
-    setCommits(commits);
-    hideLoading('commits');
+      }
+    
+      return commits;
+    };
+
+    const loadData = async () => {
+      showLoading('commits');
+      const commits = await fetchAllCommits();
+      setTotalizador(commits.length);
+      setCommits(commits);
+      hideLoading('commits');
+    };
+
+    loadData();
   }
 
   const startContent = (
@@ -283,13 +302,16 @@ function Commits(){
             style={{ width: '120px' }}
             id="selectAtendente"
           />
+          <div>
+            <InputText placeholder="Mensagem" style={{ marginRight: '10px', width: '250px' }} value={mensagemCommit} onChange={(e) => setMensagemCommit(e.target.value)}/>
+          </div>
           <Button
             label="Pesquisar"
             id="pesquisar"
             onClick={() => {
               const selectedRepo = repositorio === '' ? { name: 'Todos', code: '' } : repositorio;
               const selectedAtde = atendente === '' ? { name: 'Todos', code: '' } : atendente;
-              buscarCommits(selectedAtde, selectedRepo, selectedDateInitial, selectedDateFinal);
+              buscarCommits(selectedAtde, selectedRepo, selectedDateInitial, selectedDateFinal, mensagemCommit);
             }}
             icon='pi pi-search'
           />

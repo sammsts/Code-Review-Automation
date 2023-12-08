@@ -13,7 +13,7 @@ const Grid = (props) => {
       stripedRows: true,
       showGridlines: true,
       tableStyle: { minWidth: '50rem' },
-      emptyMessage: 'Nenhum Registro Cadastrado',
+      emptyMessage: 'Nenhum Commit Encontrado',
     };
   
     const mergedProps = { ...defaultConfig, ...rest };
