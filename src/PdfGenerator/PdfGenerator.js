@@ -20,6 +20,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  filterHeader: {
+    flexDirection: 'row',
+    alignItems: 'left',
+    margin: 10,
+    padding: 10,
+    marginTop: -20,
+  },
+  filtersText: {
+    fontSize: 10,
+  },
   logo: {
     width: 55,
     height: 50,
@@ -76,15 +86,61 @@ const styles = StyleSheet.create({
   },
 });
 
-const PdfGenerator = ({ commits }) => {
+const PdfGenerator = ({ commits, dataInicial, dataFinal, repositorio, atendente, mensagem }) => {
+  function formatarData(data) {
+    const opcoesFormato = {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    };
+  
+    const dataObj = new Date(data);
+  
+    return dataObj.toLocaleString('pt-BR', opcoesFormato);
+  }
+  
   const totalizador = commits.length;
+  
+  let filtrosCabecalho = '';
+  let filtros = '';
+  
+  if (dataInicial != null && dataFinal != '' || dataFinal != null && dataFinal != '') {
+    dataInicial = dataInicial != null ? formatarData(dataInicial) : 'Não informada';
+    dataFinal = dataFinal != null ? formatarData(dataFinal) : 'Não informada';
+    filtros += `Data Inicial: ${dataInicial} - Data Final: ${dataFinal}; `;
+  };
+
+  if (repositorio != null && repositorio != '') {
+    filtros += `Repositório: ${repositorio.name}; `;
+  } else {
+    filtros += `Repositório: Todos; `;
+  };
+
+  if (atendente != null && atendente != '') {
+    filtros += `Desenvolvedor: ${atendente.name}; `;
+  } else {
+    filtros += `Desenvolvedor: Todos; `;
+  };
+
+  if (mensagem != null && mensagem != '') {
+    filtros += `Mensagem: ${mensagem};`;
+  };
+
+  if (filtros != '') {
+    filtrosCabecalho = 'Filtros: ' + filtros;
+  } else {
+    filtrosCabecalho = 'Filtros: Nenhum filtro selecionado';
+  };
 
   return (
     <Document>
       <Page size="A4" style={styles.page} orientation="landscape">
         <View style={styles.header}>
-          <Text style={styles.headerText}>Relatório de Commits - simples</Text>
+          <Text style={styles.headerText}>Relatório de Commits</Text>
           <Image style={styles.logo} src={logo} />
+        </View>
+        <View style={styles.filterHeader}>
+          <Text style={styles.filtersText}>{filtrosCabecalho}</Text>
         </View>
         <View style={styles.section}>
           <View style={styles.table}>

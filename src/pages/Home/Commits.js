@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './styles.css';
 import axios from 'axios';
 import { Toolbar } from 'primereact/toolbar';
@@ -37,6 +37,7 @@ function Commits(){
 
   const lightColor = "#003"; //Cor para o modo claro
   const darkColor = "#FFF";  //Cor para o modo escuro
+  const inputRef = useRef(null);
   
   const repositorios = [
     { name: 'Todos', code: '' },
@@ -48,10 +49,8 @@ function Commits(){
   const atendentes = [
         { name: 'Todos', code: '' },
         { name: 'Adriano', code: 'AdrianoJMReidel' },
-        { name: 'Artur', code: 'arturcmeneghini' },
         { name: 'Augusto', code: 'augustowjerke' },
         { name: 'Fabricio', code: 'fabriciowiez' },
-        { name: 'Marcus', code: 'MarcusVSN2022' },
         { name: 'Michel', code: 'michelmachado7' },
         { name: 'Kevin', code: 'brissowkevin' },
         { name: 'Samuel', code: 'sammsts' },
@@ -61,12 +60,8 @@ function Commits(){
   ];
 
   const dataAtual = new Date();
-
   const dataInicial = new Date(dataAtual);
-  dataInicial.setHours(0, 0, 0, 0);
-
   const dataFinal = new Date(dataAtual);
-  dataFinal.setHours(23, 59, 59, 999);
 
   //ANIMAÇÃO DO TÍTULO
   const handleTitleMouseLeave = () => {
@@ -84,6 +79,16 @@ function Commits(){
     setRepositorio(rowData.repositorio)
     openModal(); 
   };
+
+  const handleButtonClickCopy = (rowData) => {
+    const textToCopy = `cherry-pick ${rowData.codigo}`;
+
+    inputRef.current.value = textToCopy;
+    inputRef.current.select();
+    document.execCommand('copy');
+
+    alert('Texto copiado para a área de transferência');
+  };
   
   const clickImprimir = async () => {
     setLoading(true);
@@ -92,7 +97,7 @@ function Commits(){
         setLoading(false);
     }, 2000);
 
-    const element = <PdfGenerator commits={commits} />;
+    const element = <PdfGenerator commits={commits} dataInicial={selectedDateInitial} dataFinal={selectedDateFinal} repositorio={repositorio} atendente={atendente} mensagem={mensagemCommit} />;
     const pdfBlob = await pdf(element).toBlob();
   
     const url = window.URL.createObjectURL(pdfBlob);
@@ -111,7 +116,6 @@ function Commits(){
       case 'augustowjerke': return 'Augusto';
       case 'fabriciowiez': return 'Fabrício';
       case 'Samuel Maciel': return 'Samuel';
-      case 'arturcmeneghini': return 'Artur';
       case 'MarcusVSN2022': return 'Cesario';  //Configuração do pc do Cesario ta alterando pra marcus, temporariamente vai ficar assim
       case 'AdrianoJMReidel': return 'Adriano';
       case 'brissowkevin': return 'Kevin';
@@ -122,17 +126,14 @@ function Commits(){
     }
   }
 
-  const setInitialDates = () => {
-    const dataAtual = new Date();
+  function defineInitHour(initDate){
+    initDate.setHours(0, 0, 0, 0);
+    return initDate;
+  };
 
-    const selectedDateInitial = new Date(dataAtual);
-    selectedDateInitial.setHours(0, 0, 0, 0);
-
-    const selectedDateFinal = new Date(dataAtual);
-    selectedDateFinal.setHours(23, 59, 59, 999);
-
-    setSelectedDateInitial(selectedDateInitial);
-    setSelectedDateFinal(selectedDateFinal);
+  function defineFinalHour(finalDate){
+    finalDate.setHours(23, 59, 59, 999);
+    return finalDate;
   };
 
   function converterData(dataString) {
@@ -141,8 +142,11 @@ function Commits(){
     const dia = data.getDate();
     const mes = data.getMonth() + 1;
     const ano = data.getFullYear();
+    const hora = data.getHours();
+    const minuto = data.getMinutes();
+    const segundo = data.getSeconds();
 
-    const dataFormatada = `${dia.toString().padStart(2, '0')}/${mes.toString().padStart(2, '0')}/${ano}`;
+    const dataFormatada = `${dia.toString().padStart(2, '0')}/${mes.toString().padStart(2, '0')}/${ano} - ${hora.toString().padStart(2, '0')}:${minuto.toString().padStart(2, '0')}:${segundo.toString().padStart(2, '0')}`;
   
     return dataFormatada;
   }
@@ -155,7 +159,10 @@ function Commits(){
   }
 
   useEffect(() => {
-    setInitialDates();
+    defineInitHour(dataInicial);
+    defineFinalHour(dataFinal);
+    setSelectedDateInitial(dataInicial);
+    setSelectedDateFinal(dataFinal);
     buscarCommits({ name: 'Todos', code: '' }, { name: 'Todos', code: '' }, dataInicial, dataFinal);
   }, []);
 
@@ -164,8 +171,12 @@ function Commits(){
     const headers = {
       Authorization: `token ${token}`,
     };
+    
     let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'sammsts', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7', 'thiagoAbase', 'Cesario-Stoquero', 'Paulo-Fritsch'];
     let repositoriosDesejados = ['GespamWeb', 'Portal_Transparencia', 'relatorios-gespam']
+
+    datainicial = defineInitHour(datainicial);
+    datafinal = defineFinalHour(datafinal);
 
     if (nome.code !== '' && nome.code !== undefined) {
       usuariosDesejados = [nome.code];
@@ -320,11 +331,17 @@ function Commits(){
       <grid id="gridMain">
         <Grid id="grid-commits" selection={commitsSelecionado} onSelectionChange={(e) => setCommitSelecionado(e.value)} value={commits}>
           <Column className='coluna' body={(rowData) => (
-              <Button label="" icon="pi pi-info-circle" outlined onClick={() => handleButtonClick(rowData)} />
+              <Button label="" icon="pi pi-info-circle" tooltip="Detalhes do commit" outlined onClick={() => handleButtonClick(rowData)} />
             )} style={{ width: '3%', textAlign: 'center' }} />
+          <Column className='coluna' body={(rowData) => (
+            <>
+              <input ref={inputRef} style={{ position: 'absolute', left: '-9999px' }} readOnly />
+              <Button label="" icon="pi pi-copy" tooltip="Copiar cherry-pick" outlined onClick={() => handleButtonClickCopy(rowData)} />
+            </>
+          )} style={{ width: '3%', textAlign: 'center' }} />
           <Column className='coluna' field="codigo" header="Código" sortable style={{ width: '28%', textAlign: 'center' }}></Column>
           <Column className='coluna' field="autor" header="Autor" sortable style={{ width: '8%', textAlign: 'center' }} ></Column>
-          <Column className='coluna' field="mensagem" header="Mensagem" sortable style={{ width: '38%' }} ></Column>
+          <Column className='coluna' field="mensagem" header="Mensagem" sortable style={{ width: '35%' }} ></Column>
           <Column className='coluna' field="repositorio" header="Repositorio" sortable style={{ width: '12%', textAlign: 'center' }} ></Column>
           <Column className='coluna' field="data" header="Data" sortable style={{ width: '10%', textAlign: 'center' }} ></Column>
         </Grid> 
