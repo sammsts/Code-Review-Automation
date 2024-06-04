@@ -59,8 +59,8 @@ function CommitsDetalhes({onClose, commitCode, repositorio}) {
         if (response.status === 200) {
           let arquivosJSON = []
           const commitInfo = response.data;
-          setUrlAvatar(commitInfo.author.avatar_url)
-          setNome(commitInfo.author.login)
+          setUrlAvatar(null)
+          setNome(commitInfo.author_name)
           setLinAdicionadas(commitInfo.stats.additions)
           setLinRemovidas(commitInfo.stats.deletions)
           setMensagem(commitInfo.commit.message)

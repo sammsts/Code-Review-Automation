@@ -35,15 +35,15 @@ function Commits(){
   const [loading, setLoading] = useState(false);
   const [mensagemCommit, setMensagemCommit] = useState('');
 
-  const lightColor = "#003"; //Cor para o modo claro
-  const darkColor = "#FFF";  //Cor para o modo escuro
+  const lightColor = "#003";
+  const darkColor = "#FFF";
   const inputRef = useRef(null);
   
   const repositorios = [
     { name: 'Todos', code: '' },
-    { name: 'GespamWeb', code: 'GespamWeb' },
-    { name: 'Portal da Transparência', code: 'Portal_Transparencia' },
-    { name: 'Api (relatórios)', code: 'relatorios-gespam' }
+    { name: 'GespamWeb', code: 5 },
+    // { name: 'Portal da Transparência', code: 'Portal_Transparencia' },
+    { name: 'Api (relatórios)', code: 21 }
   ];
 
   const atendentes = [
@@ -51,9 +51,8 @@ function Commits(){
         { name: 'Adriano', code: 'AdrianoJMReidel' },
         { name: 'Augusto', code: 'augustowjerke' },
         { name: 'Fabricio', code: 'fabriciowiez' },
-        { name: 'Michel', code: 'michelmachado7' },
         { name: 'Kevin', code: 'brissowkevin' },
-        { name: 'Samuel', code: 'sammsts' },
+        { name: 'Samuel', code: 'Samuel Maciel' },
         { name: 'Cesario', code: 'Cesario-Stoquero' },
         { name: 'Thiago', code: 'thiagoAbase' },
         { name: 'Paulo', code: 'Paulo-Fritsch' },
@@ -63,13 +62,11 @@ function Commits(){
   const dataInicial = new Date(dataAtual);
   const dataFinal = new Date(dataAtual);
 
-  //ANIMAÇÃO DO TÍTULO
   const handleTitleMouseLeave = () => {
     const color = isDarkMode ? lightColor : darkColor;
     setTitleColor(color);
   };
 
-  //Recarregar a página
   const handleLogoClick = () => {
     window.location.reload();
   };
@@ -168,23 +165,15 @@ function Commits(){
 
   const buscarCommits = async (nome, repositorio, datainicial, datafinal, mensagemCommitText) => {
     const token = process.env.REACT_APP_API_KEY;
-    const headers = {
-      Authorization: `token ${token}`,
-    };
     
-    let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'sammsts', 'AdrianoJMReidel', 'brissowkevin', 'michelmachado7', 'thiagoAbase', 'Cesario-Stoquero', 'Paulo-Fritsch'];
-    let repositoriosDesejados = ['GespamWeb', 'Portal_Transparencia', 'relatorios-gespam']
+    let usuariosDesejados = ['augustowjerke', 'fabriciowiez', 'Samuel Maciel', 'AdrianoJMReidel', 'brissowkevin', 'thiagoAbase', 'Cesario-Stoquero', 'Paulo-Fritsch'];
+    let repositoriosDesejados = [5, /*'Portal_Transparencia',*/ 21]
 
     datainicial = defineInitHour(datainicial);
     datafinal = defineFinalHour(datafinal);
 
     if (nome.code !== '' && nome.code !== undefined) {
       usuariosDesejados = [nome.code];
-      
-      if(nome.code == "SAMu3lms")
-      {
-        usuariosDesejados = ['SAMu3lms', 'sammsts']
-      }
     }
 
     if(repositorio.code !== '' && repositorio.code !== undefined){
@@ -192,10 +181,10 @@ function Commits(){
     }
 
     const fetchData = async (page, repo, user) => {
-      const apiUrl = `https://api.github.com/repos/Abase-Sistemas/${repo}/commits?since=${datainicial}&until=${datafinal}&page=${page}&author=${user}`;
+      const apiUrl = `https://gitlab.abase.com.br/api/v4/projects/${repo}/repository/commits?access_token=${token}&since=${datainicial}&until=${datafinal}&per_page=7&page=${page}&author=${user}`;
     
       try {
-        const response = await axios.get(apiUrl, { headers });
+        const response = await axios.get(apiUrl);
         return response.data;
       } catch (error) {
         console.error(`Erro ao buscar os commits no ${repo}: `, error);
@@ -219,14 +208,14 @@ function Commits(){
             
             commits.push(
               ...pageCommits.filter((commit) =>
-                !commit.commit.message.includes('Merge branch') && (mensagemCommitText ? commit.commit.message.includes(mensagemCommitText) : true)
+                !commit.message.includes('Merge branch') && (mensagemCommitText ? commit.message.includes(mensagemCommitText) : true)
               ).map((commit) => ({
-                codigo: commit.sha,
-                autor: trocarNome(commit.commit.author.name),
-                mensagem: commit.commit.message,
+                codigo: commit.id,
+                autor: trocarNome(commit.author_name),
+                mensagem: commit.message,
                 repositorio: repositoriosDesejados[i],
-                data: converterData(commit.commit.author.date),
-                url: commit.html_url,
+                data: converterData(commit.authored_date),
+                url: commit.web_url,
                 totalizador: commits.length
               }))
             );
@@ -329,7 +318,7 @@ function Commits(){
         </div>
       </div>
       <grid id="gridMain">
-        <Grid id="grid-commits" selection={commitsSelecionado} onSelectionChange={(e) => setCommitSelecionado(e.value)} value={commits}>
+        <Grid id="grid-commits" selection={commitsSelecionado} onSelectionChange={(e) => setCommitSelecionado(e.value)} value={commits} >
           <Column className='coluna' body={(rowData) => (
               <Button label="" icon="pi pi-info-circle" tooltip="Detalhes do commit" outlined onClick={() => handleButtonClick(rowData)} />
             )} style={{ width: '3%', textAlign: 'center' }} />
